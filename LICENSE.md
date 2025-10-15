@@ -1,77 +1,61 @@
-ЛИЦЕНЗИОННОЕ СОГЛАШЕНИЕ
+# **ЛИЦЕНЗИОННОЕ СОГЛАШЕНИЕ:**
+На использование программного обеспечения **PowerSetSetup**
 
-НА ИСПОЛЬЗОВАНИЕ ПРОГРАММНОГО ОБЕСПЕЧЕНИЯ PowerSetSetup
-
+**License: Proprietary**
 Copyright (c) 2025 BrocatScript
 
 Все права защищены.
-
 НАСТОЯЩАЯ ЛИЦЕНЗИЯ ПРЕДОСТАВЛЯЕТ ВАМ ПРАВО НА:
 
-1. РАЗРЕШЕНО:
-
+## 1. РАЗРЕШЕНО:
 * Бесплатное использование программы для любых целей (личных и коммерческих)
-* Бесплатное распространение оригинальной неизменённой версии программы
+* Бесплатное распространение оригинальной неизмененной версии программы
 * Использование в компаниях и организациях
 * Использование программы в образовательных целях
 
-2. ЗАПРЕЩЕНО:
-
-* Продажа программы, её модификаций или производных работ
-* Изменение исходного кода и распространение изменённых версий
+## 2. ЗАПРЕЩЕНО:
+* Продажа программы, ее модификаций или производных работ
+*  Распространение измененных версий
 * Удаление или изменение уведомлений об авторских правах
 * Представление программы как собственная разработка
 
-3. ПОДДЕРЖКА АВТОРА:
-
+## 3. ПОДДЕРЖКА АВТОРА:
 Если программа была вам полезна, вы можете поддержать автора:
-
 * Donate: https://pay.cloudtips.ru/p/0cdee068
 * Email: brocatscript@yandex.com
 
-4. ОТКАЗ ОТ ГАРАНТИЙ:
-
-Программа предоставляется «КАК ЕСТЬ». Автор не несёт ответственности за любые
-
+## 4. ОТКАЗ ОТ ГАРАНТИЙ:
+Программа предоставляется «КАК ЕСТЬ». Автор не несет ответственности за любые 
 прямые или косвенные убытки, вызванные использованием программы.
 
 ----------------
 
-ENGLISH VERSION:
+# ENGLISH VERSION:
+software license agreement for **PowerSetSetup**
 
-SOFTWARE LICENSE AGREEMENT
-
-FOR PowerSetSetup
-
+**License: Proprietary**
 Copyright (c) 2025 BrocatScript
 
 All rights reserved.
-
 THIS LICENSE GRANTS YOU THE RIGHT TO:
 
-1. ALLOWED:
-
+## 1. ALLOWED:
 * Free use for any purpose (personal and commercial)
 * Free distribution of the original unmodified version
 * Use in companies and organizations
 * Use for educational purposes
 
-2. PROHIBITED:
-
+## 2. PROHIBITED:
 * Selling the software, its modifications or derivative works
-* Modifying source code and distributing modified versions
+* Distribution of modified versions
 * Removal or alteration of copyright notices
 * Presenting the software as your own development
 
-3. SUPPORT THE AUTHOR:
-
+## 3. SUPPORT THE AUTHOR:
 If the software was helpful, you can support the author:
-
 * Donate: https://pay.cloudtips.ru/p/0cdee068
 * Email: brocatscript@yandex.com
 
-4. DISCLAIMER:
-
+## 4. DISCLAIMER:
 The software is provided "AS IS". Author is not responsible for any direct or
-
 indirect damages caused by using the software.
