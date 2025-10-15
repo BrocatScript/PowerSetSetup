@@ -19,7 +19,7 @@
    • Изменение и реверс-инжиниринг
    • Коммерческое использование
 
-#### **Полная лицензия** (https://github.com/BrocatScript/PowerSetSetup/blob/main/LICENSE.txt).
+#### **Полная лицензия** [Proprietary](https://github.com/BrocatScript/PowerSetSetup/blob/main/LICENSE.md).
 
 ## **ПОДДЕРЖКА**
 **При проблемах:**
@@ -29,20 +29,3 @@
 
 ## **Контакты**
 Для связи с автором проекта писать на почту: brocatscript@yandex.com
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
