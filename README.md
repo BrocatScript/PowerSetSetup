@@ -33,7 +33,11 @@ Copyright © 2025 BrocatScript. Все права защищены.
 3. 📧 Свяжитесь с автором: brocatscript@yandex.com
 
 
+
+
+
 ## Copyright © 2025 BrocatScript. All rights reserved.
+
 
 
 
