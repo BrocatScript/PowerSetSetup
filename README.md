@@ -32,11 +32,8 @@ Copyright © 2025 BrocatScript. Все права защищены.
 2. 🛡️ Отключите сторонние антивирусы на время установки
 3. 📧 Свяжитесь с автором: brocatscript@yandex.com
 
+#### Copyright © 2025 BrocatScript. All rights reserved.
 
-
-
-
-## Copyright © 2025 BrocatScript. All rights reserved.
 
 
 
