@@ -1,31 +1,45 @@
 # PowerSetSetup
 
-## **Описание**
-**PowerSetSetup** — это программа, предназначенная для **управления настройками электропитания** в операционных системах Windows 10 и Windows 11. С её помощью можно легко и быстро выполнять различные операции со схемами электропитания, такие как удаление, добавление, активация, сброс и получение ID схемы. Это позволяет оптимизировать энергопотребление компьютера в соответствии с потребностями пользователя.
+## **Description**
+**PowerSetSetup** — this is a program designed to **manage power settings** on Windows 10 and Windows 11 operating systems. With it, you can easily and quickly perform various operations with power supply circuits, such as deleting, adding, activating, resetting, and retrieving the circuit ID. This allows you to optimize the computer's power consumption in accordance with the user's needs.
 
-#### Copyright © 2025 BrocatScript. Все права защищены.
+#### Copyright © 2025 BrocatScript. All rights reserved.
 
-## **УСТАНОВКА**
- 1. ▶ Запустите PowerSetSetup_installer.exe
- 2. ▶ Дождитесь завершения процесса
+## **Installation**
+ 1. ▶ Launch PowerSetSetup_installer.exe
+ 2. ▶ Select the installation path
+ 2. ▶ Wait for the process to complete
 
-## **ВАЖНО**
- ⚠ Перед настройкой создайте точку восстановления системы
- ⚠ Закройте все ресурсоёмкие приложения
- ⚠ Требуется Windows 10/11 и права Администратора (Windows 10)
+## **Important**
+ ⚠ Create a system restore point before setting it up
+ ⚠ Close all resource-intensive applications
+ ⚠ Requires Windows 10/11
 
-## **ЛИЦЕНЗИЯ**
-🔒 Это проприетарное ПО. Запрещено:
-   • Изменение и реверс-инжиниринг
-   • Распространение модификаций
+## **License**
+🔒 This is proprietary software. Forbidden:
+   • Sale of the program, its modifications or derivative works
+   • Distribution of modified versions
+   • Deleting or changing copyright notices
+   • Presenting the program as an in-house development
+   ALLOWED
+   • Free use of the program for any purpose (personal and commercial)
+   • Free distribution of the original unmodified version of the program
+   • Use in companies and organizations
+   • Deleting or changing copyright notices
+   • Presenting the program as an in-house development
 
-#### **Полная лицензия** [Proprietary](https://github.com/BrocatScript/PowerSetSetup/blob/main/LICENSE.md).
+#### **Full license** [Proprietary](https://github.com/BrocatScript/PowerSetSetup/blob/main/LICENSE.md).
 
-## **ПОДДЕРЖКА**
-**При проблемах:**
-1. 🔧 Проверьте права Администратора (Windows 10)
-2. 🛡️ Отключите сторонние антивирусы на время установки
-3. 📧 Свяжитесь с автором: brocatscript@yandex.com
+## **Technical support**
+**If there are problems:**
+1. 🛡️ Disable third-party antiviruses during installation
+2. 🎮 Close resource-intensive programs
+3. 📧 Contact the author: brocatscript@yandex.com
 
-## **Контакты**
-Для связи с автором проекта писать на почту: brocatscript@yandex.com
+## ***Support the author***
+[To support](https://pay.cloudtips.ru/p/0cdee068)
+
+
+## **Contacts**
+
+To contact the author of the project, send an email: brocatscript@yandex.com[text](command:github.copilot.chat.toggleStatusMenu)
