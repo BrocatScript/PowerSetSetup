@@ -1,45 +1,98 @@
-# PowerSetSetup
+# PowerSetSetup ⚡
 
-## **Description**
-**PowerSetSetup** — this is a program designed to **manage power settings** on Windows 10 and Windows 11 operating systems. With it, you can easily and quickly perform various operations with power supply circuits, such as deleting, adding, activating, resetting, and retrieving the circuit ID. This allows you to optimize the computer's power consumption in accordance with the user's needs.
+![Windows 10/11](https://img.shields.io/badge/Windows-10%2F11-0078D6?style=for-the-badge&logo=windows)
+![License](https://img.shields.io/badge/License-Proprietary-blue?style=for-the-badge)
+![Status](https://img.shields.io/badge/Status-Active-success?style=for-the-badge)
 
-#### Copyright © 2025 BrocatScript. All rights reserved.
+## 📖 Description
 
-## **Installation**
- 1. ▶ Launch PowerSetSetup_installer.exe
- 2. ▶ Select the installation path
- 2. ▶ Wait for the process to complete
+**PowerSetSetup** is a powerful Windows utility designed to manage power settings on **Windows 10 and Windows 11** operating systems. With an intuitive interface, you can easily perform various operations with power schemes including:
 
-## **Important**
- ⚠ Create a system restore point before setting it up
- ⚠ Close all resource-intensive applications
- ⚠ Requires Windows 10/11
+- 🔄 **Activating** power schemes
+- 🗑️ **Deleting** unwanted power plans  
+- ➕ **Adding** custom power schemes
+- 🔄 **Resetting** to default settings
+- 🔍 **Retrieving** power scheme IDs
+- ⚙️ **Optimizing** power consumption
 
-## **License**
-🔒 This is proprietary software. Forbidden:
-   • Sale of the program, its modifications or derivative works
-   • Distribution of modified versions
-   • Deleting or changing copyright notices
-   • Presenting the program as an in-house development
-   ALLOWED
-   • Free use of the program for any purpose (personal and commercial)
-   • Free distribution of the original unmodified version of the program
-   • Use in companies and organizations
-   • Deleting or changing copyright notices
-   • Presenting the program as an in-house development
+> **Copyright © 2025 BrocatScript. All rights reserved.**
 
-#### **Full license** [Proprietary](https://github.com/BrocatScript/PowerSetSetup/blob/main/LICENSE.md).
+---
 
-## **Technical support**
-**If there are problems:**
-1. 🛡️ Disable third-party antiviruses during installation
-2. 🎮 Close resource-intensive programs
-3. 📧 Contact the author: brocatscript@yandex.com
+## 🚀 Installation
 
-## ***Support the author***
-[To support](https://pay.cloudtips.ru/p/0cdee068)
+### Quick Install:
+1. **▶** Download `PowerSetSetup_installer.exe`
+2. **📁** Select your preferred installation path
+3. **⏳** Wait for the installation to complete
+4. **✅** Launch and configure your power settings
 
+---
 
-## **Contacts**
+## ⚠️ Important Notes
 
-To contact the author of the project, send an email: brocatscript@yandex.com[text](command:github.copilot.chat.toggleStatusMenu)
+| Warning | Description |
+|---------|-------------|
+| 🔄 | **Create a system restore point** before making changes |
+| 💻 | **Close resource-intensive applications** during installation |
+| 🪟 | **Requires Windows 10/11** - not compatible with older versions |
+| 🛡️ | **Temporarily disable third-party antiviruses** if installation fails |
+
+---
+
+## 📜 License
+
+### 🔒 Proprietary Software - Usage Restrictions:
+
+#### ❌ **PROHIBITED:**
+- Selling the program, modifications, or derivative works
+- Distributing modified versions
+- Removing or altering copyright notices
+- Presenting as your own development
+
+#### ✅ **ALLOWED:**
+- Free use for personal and commercial purposes
+- Distribution of original, unmodified versions
+- Use in companies and organizations
+- Modification for personal use
+
+**Full license:** [Proprietary License](https://github.com/BrocatScript/PowerSetSetup/blob/main/LICENSE.md)
+
+---
+
+## 🛠️ Technical Support
+
+### Troubleshooting Steps:
+1. **🛡️** Disable third-party antivirus software temporarily
+2. **🎮** Close all resource-intensive programs
+3. **🔁** Ensure you're running Windows 10 or 11
+4. **📧** Contact support if issues persist
+
+### 📬 Contact the Author:
+**Email:** [brocatscript@yandex.com](mailto:brocatscript@yandex.com)
+
+---
+
+## 💝 Support the Author
+
+If you find this tool useful, consider supporting the development:
+
+[![Support](https://img.shields.io/badge/Support-Developer-FF6B6B?style=for-the-badge&logo=heart)](https://pay.cloudtips.ru/p/0cdee068)
+
+---
+
+## 📞 Contact
+
+For questions, suggestions, or collaboration:
+
+**Email:** [brocatscript@yandex.com](mailto:brocatscript@yandex.com)
+
+---
+
+<div align="center">
+
+**Made with ❤️ by BrocatScript**
+
+*Optimize your Windows power management experience*
+
+</div>
