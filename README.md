@@ -3,7 +3,6 @@
 ![Windows 10/11](https://img.shields.io/badge/Windows-10%2F11-0078D6?style=for-the-badge&logo=windows)
 ![License](https://img.shields.io/badge/License-Proprietary-blue?style=for-the-badge)
 ![Status](https://img.shields.io/badge/Status-Active-success?style=for-the-badge)
-![Program](https://img.shields.io/badge/PowerSetSetup-1.0.0-green)
 
 ## 📖 Description
 
@@ -98,4 +97,5 @@ For questions, suggestions, or collaboration:
 
 
 </div>
+
 
