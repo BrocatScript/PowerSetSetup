@@ -1,61 +1,57 @@
-# **ЛИЦЕНЗИОННОЕ СОГЛАШЕНИЕ:**
-На использование программного обеспечения **PowerSetSetup**
+# PowerSetSetup License Agreement
 
-**License: Proprietary**
-Copyright (c) 2025 BrocatScript
+![License](https://img.shields.io/badge/License-Proprietary-blue)
+![Program](https://img.shields.io/badge/PowerSetSetup-0.1.0-green)
 
-Все права защищены.
-НАСТОЯЩАЯ ЛИЦЕНЗИЯ ПРЕДОСТАВЛЯЕТ ВАМ ПРАВО НА:
+## 📄 Basic Provisions
 
-## 1. РАЗРЕШЕНО:
-* Бесплатное использование программы для любых целей (личных и коммерческих)
-* Бесплатное распространение оригинальной неизмененной версии программы
-* Использование в компаниях и организациях
-* Использование программы в образовательных целях
+**License Type:** Proprietary  
+**Author:** BrocatScript  
+**Program:** PowerSetSetup v0.1.0  
+**Copyright © 2025 BrocatScript**  
+**All rights reserved.**
 
-## 2. ЗАПРЕЩЕНО:
-* Продажа программы, ее модификаций или производных работ
-*  Распространение измененных версий
-* Удаление или изменение уведомлений об авторских правах
-* Представление программы как собственная разработка
+---
 
-## 3. ПОДДЕРЖКА АВТОРА:
-Если программа была вам полезна, вы можете поддержать автора:
-* Donate: https://pay.cloudtips.ru/p/0cdee068
-* Email: brocatscript@yandex.com
+## ✅ ALLOWED:
 
-## 4. ОТКАЗ ОТ ГАРАНТИЙ:
-Программа предоставляется «КАК ЕСТЬ». Автор не несет ответственности за любые 
-прямые или косвенные убытки, вызванные использованием программы.
-
-----------------
-
-# ENGLISH VERSION:
-software license agreement for **PowerSetSetup**
-
-**License: Proprietary**
-Copyright (c) 2025 BrocatScript
-
-All rights reserved.
-THIS LICENSE GRANTS YOU THE RIGHT TO:
-
-## 1. ALLOWED:
-* Free use for any purpose (personal and commercial)
-* Free distribution of the original unmodified version
+* Free use of the program for any purpose (personal and commercial)
+* Free distribution of the original unmodified version of the program
 * Use in companies and organizations
-* Use for educational purposes
+* Use of the program for educational purposes
 
-## 2. PROHIBITED:
-* Selling the software, its modifications or derivative works
+---
+
+## ❌ PROHIBITED:
+
+* Selling the program, its modifications or derivative works
 * Distribution of modified versions
 * Removal or alteration of copyright notices
-* Presenting the software as your own development
+* Presenting the program as your own development
 
-## 3. SUPPORT THE AUTHOR:
-If the software was helpful, you can support the author:
-* Donate: https://pay.cloudtips.ru/p/0cdee068
-* Email: brocatscript@yandex.com
+---
 
-## 4. DISCLAIMER:
-The software is provided "AS IS". Author is not responsible for any direct or
-indirect damages caused by using the software.
+## 💝 SUPPORT THE AUTHOR:
+
+If the program was helpful to you, you can support the author:
+
+[![Support the Author](https://img.shields.io/badge/Support-Author-FF6B6B)](https://pay.cloudtips.ru/p/0cdee068)
+
+**Email:** [brocatscript@yandex.com](mailto:brocatscript@yandex.com)
+
+---
+
+## ⚠️ DISCLAIMER:
+
+The program is provided "AS IS". The author is not responsible for any 
+direct or indirect damages caused by using the program.
+
+---
+
+<div align="center">
+
+*Thank you for using PowerSetSetup!*
+
+**Copyright © 2025 BrocatScript. All rights reserved.**
+
+</div>
