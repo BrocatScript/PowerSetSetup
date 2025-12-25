@@ -1,7 +1,7 @@
 # PowerSetSetup License Agreement
 
-![License](https://img.shields.io/badge/License-Proprietary-blue)
-![Program](https://img.shields.io/badge/PowerSetSetup-1.0.1%20fix-blue)
+![License](https://img.shields.io/badge/License-Proprietary-blue?style=for-the-badge)
+![Program](https://img.shields.io/badge/PowerSetSetup-1.0.1%20fix-blue?style=for-the-badge)
 
 ## 📄 Basic Provisions
 
@@ -56,6 +56,7 @@ direct or indirect damages caused by using the program.
 **Copyright © 2025 BrocatScript. All rights reserved.**
 
 </div>
+
 
 
 
