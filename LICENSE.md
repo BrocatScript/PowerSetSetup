@@ -1,13 +1,13 @@
 # PowerSetSetup License Agreement
 
 ![License](https://img.shields.io/badge/License-Proprietary-blue)
-![Program](https://img.shields.io/badge/PowerSetSetup-1.0.1-green)
+![Program](https://img.shields.io/badge/PowerSetSetup-1.0.1%20fix-blue)
 
 ## 📄 Basic Provisions
 
 **License Type:** Proprietary  
 **Author:** BrocatScript  
-**Program:** PowerSetSetup v1.0.1
+**Program:** PowerSetSetup v1.0.1 fix
 **Copyright © 2025 BrocatScript**  
 **All rights reserved.**
 
@@ -55,6 +55,7 @@ direct or indirect damages caused by using the program.
 **Copyright © 2025 BrocatScript. All rights reserved.**
 
 </div>
+
 
 
 
