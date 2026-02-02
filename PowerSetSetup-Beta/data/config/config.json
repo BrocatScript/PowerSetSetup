@@ -1,9 +1,9 @@
 {
-  "language": "en",
-  "allow_beta": true,
-  "check_on_startup": false,
-  "auto_download_install": false,
-  "version": "0.0.0 beta",
-  "last_modified": "2026-01-22",
-  "description": "settings for PowerSetSetup"
+    "language": "ru",
+    "allow_beta": true,
+    "check_on_startup": false,
+    "auto_download_install": true,
+    "version": "X.X.X Beta",
+    "last_modified": "2026-01-27",
+    "description": "settings for PowerSetSetup"
 }
