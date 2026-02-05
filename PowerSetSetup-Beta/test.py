@@ -4,11 +4,14 @@ import os
 import json
 from colorama import init, Fore, Back, Style
 import gettext
-from time import sleep
+import time
 import platform
 import logging
 import locale
 import webbrowser
+from datetime import datetime
+
+sleep = time.sleep
 
 # Импорт модуля проверки обновлений
 try:
@@ -117,9 +120,9 @@ def read_config():
         "auto_language": True,
         "allow_beta": False,
         "check_on_startup": True,
-        "auto_download_install": True,
+        "auto_download_install": False,
         "version": "1.0.2 beta",
-        "last_modified": "2026-02-02",
+        "last_modified": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
         "description": "settings for PowerSetSetup"
     }
     
@@ -143,6 +146,8 @@ def read_config():
 def save_config(config):
     config_path = os.path.join('data', 'config', 'config.json')
     try:
+        config["last_modified"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
         os.makedirs(os.path.dirname(config_path), exist_ok=True)
         with open(config_path, 'w', encoding='utf-8') as f:
             json.dump(config, f, indent=4, ensure_ascii=False)
@@ -1127,13 +1132,19 @@ def settings_menu():
         if settings_menu in ["1", "lang", "l"]:
             language_settings()
             break
-        elif settings_menu in ["2", "beta"]:
+        elif settings_menu == "2":
+            clear()
+            logging.error("Эта функция недоступна, потому что может навредить вашему компьютеру! Она не готова!")
+            print("ERROR: It is beta test!!!")
+            print("Ошибка: Это тестовая версия!!!")
+            sleep(2)
+        elif settings_menu in ["3", "beta"]:
             beta_settings()
             break
-        elif settings_menu in ["3", "9", "back", "b"]:
+        elif settings_menu in ["4", "9", "back", "b"]:
             Main_Menu.main_menu()
             break
-        elif settings_menu in ["4", "0", "exit", "end", "e"]:
+        elif settings_menu in ["5", "0", "exit", "end", "e"]:
             end()
             break
         elif settings_menu in ["ru", "r", "ру", "р"]:
