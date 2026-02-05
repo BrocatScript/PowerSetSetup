@@ -1,0 +1,300 @@
+# English translations for PROJECT.
+# Copyright (C) 2025 ORGANIZATION
+# This file is distributed under the same license as the PROJECT project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2025.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2025-12-21 23:33+0300\n"
+"PO-Revision-Date: 2025-12-21 23:33+0300\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: en\n"
+"Language-Team: en <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ts22.py:9
+msgid "WARNING: All other power plans will be deleted after you select one!"
+msgstr ""
+
+#: ts22.py:10
+msgid "Enter the number: "
+msgstr ""
+
+#: ts22.py:11
+msgid "Back to main menu"
+msgstr ""
+
+#: ts22.py:12
+msgid "Back to Advanced Settings"
+msgstr ""
+
+#: ts22.py:13
+msgid "Exit"
+msgstr ""
+
+#: ts22.py:14
+msgid "Maximum performance"
+msgstr ""
+
+#: ts22.py:15
+msgid "High performance"
+msgstr ""
+
+#: ts22.py:16
+msgid "Balanced"
+msgstr ""
+
+#: ts22.py:17
+msgid "Power saving"
+msgstr ""
+
+#: ts22.py:18
+msgid "Change language"
+msgstr ""
+
+#: ts22.py:19
+msgid "Current language: English"
+msgstr ""
+
+#: ts22.py:20
+msgid "Select language:"
+msgstr ""
+
+#: ts22.py:21
+msgid "Русский"
+msgstr ""
+
+#: ts22.py:22
+msgid "English"
+msgstr ""
+
+#: ts22.py:23
+msgid "Settings"
+msgstr ""
+
+#: ts22.py:24
+msgid "Language settings"
+msgstr ""
+
+#: ts22.py:25
+msgid "Main Menu"
+msgstr ""
+
+#: ts22.py:26
+msgid "Advanced settings"
+msgstr ""
+
+#: ts22.py:27
+msgid "Automatic configuration"
+msgstr ""
+
+#: ts22.py:28
+msgid "Show system information"
+msgstr ""
+
+#: ts22.py:29 ts22.py:35
+msgid "Performance test"
+msgstr ""
+
+#: ts22.py:30
+msgid "Check for updates"
+msgstr ""
+
+#: ts22.py:31
+msgid "Update check"
+msgstr ""
+
+#: ts22.py:32
+msgid "ERROR: Update check failed!"
+msgstr ""
+
+#: ts22.py:33 ts22.py:36
+msgid "About"
+msgstr ""
+
+#: ts22.py:34
+msgid "System information"
+msgstr ""
+
+#: ts22.py:37
+msgid "Author: BrocatScript"
+msgstr ""
+
+#: ts22.py:38
+msgid "Support the author"
+msgstr ""
+
+#: ts22.py:39
+msgid "Current version:"
+msgstr ""
+
+#: ts22.py:40
+msgid "Latest version:"
+msgstr ""
+
+#: ts22.py:41
+msgid "New version available:"
+msgstr ""
+
+#: ts22.py:42
+msgid "Download update"
+msgstr ""
+
+#: ts22.py:43
+msgid "Skip update"
+msgstr ""
+
+#: ts22.py:45
+msgid "Opening the page"
+msgstr ""
+
+#: ts22.py:46
+msgid "Choose the required mode"
+msgstr ""
+
+#: ts22.py:47
+msgid "Maximum power consumption"
+msgstr ""
+
+#: ts22.py:48
+msgid "Power consumption balance"
+msgstr ""
+
+#: ts22.py:49
+msgid "Lowers battery consumption"
+msgstr ""
+
+#: ts22.py:53
+msgid "Delete the scheme"
+msgstr ""
+
+#: ts22.py:54
+msgid "Reset the schemes"
+msgstr ""
+
+#: ts22.py:55
+msgid "Add a scheme"
+msgstr ""
+
+#: ts22.py:56
+msgid "Activate the scheme"
+msgstr ""
+
+#: ts22.py:57
+msgid "List all schemes"
+msgstr ""
+
+#: ts22.py:58
+msgid "Manual input"
+msgstr ""
+
+#: ts22.py:59
+msgid "Go back"
+msgstr ""
+
+#: ts22.py:61
+msgid "Scheme \"Balanced\" activated!"
+msgstr ""
+
+#: ts22.py:63
+msgid "Scheme \"High performance\" activated!"
+msgstr ""
+
+#: ts22.py:65
+msgid "Scheme \"Maximum performance\" activated!"
+msgstr ""
+
+#: ts22.py:67
+msgid "Scheme \"Power saving\" activated!"
+msgstr ""
+
+#: ts22.py:68
+msgid "Enter the power scheme ID: "
+msgstr ""
+
+#: ts22.py:72
+msgid "Scheme \"Maximum Performance\" successfully added!"
+msgstr ""
+
+#: ts22.py:73
+msgid "What do you want to delete?"
+msgstr ""
+
+#: ts22.py:74
+msgid "Scheme \"Balanced\" successfully deleted!"
+msgstr ""
+
+#: ts22.py:75
+msgid "Scheme \"High performance\" succesfull deleted!"
+msgstr ""
+
+#: ts22.py:76
+msgid "Scheme \"Maximum performance\" succesfull deleted!"
+msgstr ""
+
+#: ts22.py:77
+msgid "Scheme \"Power saving\" succesfull deleted!"
+msgstr ""
+
+#: ts22.py:78
+msgid "Scheme successfully deleted!"
+msgstr ""
+
+#: ts22.py:80
+msgid "Go back to select which scheme to delete?"
+msgstr ""
+
+#: ts22.py:81
+msgid "Succesfull!"
+msgstr ""
+
+#: ts22.py:86
+msgid "Set the display turn‑off time: "
+msgstr ""
+
+#: ts22.py:88
+msgid "minutes"
+msgstr ""
+
+#: ts22.py:89
+msgid "Advanced scheme settings"
+msgstr ""
+
+#: ts22.py:90
+msgid "Display off time"
+msgstr ""
+
+#: ts22.py:91
+msgid "Time to enter sleep mode"
+msgstr ""
+
+#: ts22.py:92
+msgid "Hard disk shutdown time"
+msgstr ""
+
+#: ts22.py:93
+msgid "Current power supply circuit settings"
+msgstr ""
+
+#: ts22.py:94
+msgid "Beta Version Settings"
+msgstr ""
+
+#: ts22.py:99
+msgid "Settings saved"
+msgstr ""
+
+#: ts22.py:100
+msgid "A fix for the update is available:"
+msgstr ""
+
+#: ts22.py:101
+msgid "Beta update available:"
+msgstr ""
+
