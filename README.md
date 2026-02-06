@@ -15,7 +15,7 @@
 - 🔍 **Retrieving** power scheme IDs
 - ⚙️ **Optimizing** power consumption
 
-> **Copyright © 2025 BrocatScript. All rights reserved.**
+> **Copyright © 2025-2026 BrocatScript. All rights reserved.**
 
 ---
 
@@ -97,5 +97,6 @@ For questions, suggestions, or collaboration:
 
 
 </div>
+
 
 
