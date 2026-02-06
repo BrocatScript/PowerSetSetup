@@ -53,7 +53,8 @@ direct or indirect damages caused by using the program.
 
 *Thank you for using PowerSetSetup!*
 
-**Copyright © 2025 BrocatScript. All rights reserved.**
+**Copyright © 2025-2026 BrocatScript. All rights reserved.**
 
 </div>
+
 
