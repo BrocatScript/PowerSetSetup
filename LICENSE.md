@@ -6,10 +6,10 @@
 ## 📄 Basic Provisions
 
 **License Type:** Proprietary  
-**Author:** BrocatScript  
-**Program:** PowerSetSetup v1.0.1 fix
+**Author:** BrocatScript
+**Program:** PowerSetSetup v1.0.2 beta and v1.0.1 fix
 
-**Copyright © 2025 BrocatScript**  
+**Copyright © 2025-2026 BrocatScript**  
 **All rights reserved.**
 
 ---
@@ -56,3 +56,4 @@ direct or indirect damages caused by using the program.
 **Copyright © 2025 BrocatScript. All rights reserved.**
 
 </div>
+
