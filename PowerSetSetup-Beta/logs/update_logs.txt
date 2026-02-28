@@ -1,0 +1,2 @@
+2026-02-28 20:58:47,651 [INFO] --- PowerSetSetup Update x.x.x Dev ---
+2026-02-28 20:58:47,653 [INFO] Admin mode: True
