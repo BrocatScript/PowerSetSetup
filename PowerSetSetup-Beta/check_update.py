@@ -37,7 +37,7 @@ logging.basicConfig(
 logger = logging.getLogger()
 logging.info(f"--- {Name_Program} {version} ---")
 
-VERSION_URL = "https://raw.githubusercontent.com/BrocatScript/PowerSetSetup/main/version_beta_test.json"
+VERSION_URL = "https://raw.githubusercontent.com/BrocatScript/PowerSetSetup/main/version.json"
 
 def clear():
     if platform.system() == 'Windows':

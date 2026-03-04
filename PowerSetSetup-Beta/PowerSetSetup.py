@@ -13,13 +13,6 @@ from datetime import datetime
 
 sleep = time.sleep
 
-try:
-    from update_checker import check_for_updates, load_config as load_update_config
-    UPDATE_CHECKER_AVAILABLE = True
-except ImportError as e:
-    logging.error(f"The update verification module is unavailable: ({e})")
-    UPDATE_CHECKER_AVAILABLE = False
-
 Name_Program = "PowerSetSetup"
 version = "Dev 1.0.2"
 
@@ -40,33 +33,14 @@ logging.basicConfig(
 logger = logging.getLogger()
 logging.info(f"--- {Name_Program} {version} ---")
 
+logging.debug("Launching UTF-8 encoding")
+os.system('chcp 65001 > nul')
+
 def clear():
     if platform.system() == 'Windows':
         os.system('cls')
     else:
         error_os()
-
-try:
-    logging.debug("Launching UTF-8 encoding")
-    os.system('chcp 65001 > nul')
-    logging.debug('The UTF-8 encoder has been applied!')
-except Exception as e:
-    logging.error(f"Couldn't apply UTF-8 encoder: ({e})")
-    clear()
-    print('Error: UTF-8 not activate!')
-    print('Program close')
-    print('3')
-    sleep(1)
-    clear()
-    print('Error: UTF-8 not activate!')
-    print('Program close')
-    print('2')
-    sleep(1)
-    clear()
-    print('Error: UTF-8 not activate!')
-    print('Program close')
-    print('1')
-    sys.exit(1)
 
 init(autoreset=True)
 
@@ -75,15 +49,6 @@ LOCALE_DIR = 'data/config/locale'
 DOMAIN = 'messages'
 
 _ = None
-
-def cheack_os():
-    logging.info('Checking the system')
-    if platform.system() == "Windows":
-        logging.info('The system is recognized as Windows')
-        Main_Menu.main_menu()
-    else:
-        logging.error(f'The system is recognized as {platform.system()}')
-        error_os()
 
 def get_system_lang():
     try:
@@ -146,7 +111,6 @@ def save_config(config):
     config_path = os.path.join('data', 'config', 'config.json')
     try:
         config["last_modified"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-
         os.makedirs(os.path.dirname(config_path), exist_ok=True)
         with open(config_path, 'w', encoding='utf-8') as f:
             json.dump(config, f, indent=4, ensure_ascii=False)
@@ -176,11 +140,10 @@ def apply_language_from_config():
         setup_localization(system_lang)
     else:
         saved_lang = config.get("language", "en")
-        logging.info(f"{log_saved_language_used} {saved_lang}")
+        logging.info(f"The saved language is used: {saved_lang}")
         setup_localization(saved_lang)
     
     return config
-
 
 def language_setting(new_lang):
     config = read_config()
@@ -195,7 +158,7 @@ config = apply_language_from_config()
 current_lang = config.get("language", "en")
 setup_localization(current_lang)
 
-id_power_sh_send = "None"
+id_power_sh_send = ""
 
 def update_text_variables():
     global lang_addPowerPlanInfo, lang_scheme_warning, lang_fix_update
@@ -240,12 +203,13 @@ def update_text_variables():
     global log_select_delete_sh, log_select_add_sh, log_select_activate_sh, log_language_changed, log_configuration_file_uploaded
     global log_exit_program, log_progress, log_select_automode, log_activate_sh, log_create_configuration_file, log_language_set
     global log_configuration_file_saved, log_automatic_language_detection, log_saved_language_used, log_automatic_language_disabled
-    global log_automatic_check_updates, log_update_ready_install, log_automatic_update_disabled
+    global log_automatic_check_updates, log_update_ready_install, log_automatic_update_disabled, log_go_main_menu, log_go_automode_menu
+    global log_go_advanced_menu, log_add_sh
 
     # logs errors
     global log_error_input, log_error_activate_sh, log_error_automode, log_configuration_file_not_found, log_error_language_set
     global log_error_reading_configuration_file, log_error_configuration_file_saved, log_error_executing, log_error_update_module
-    global log_error_auto_update_configuration_file, log_error_auto_update
+    global log_error_auto_update_configuration_file, log_error_auto_update, log_error_check_update, log_error_add_sh
     
     # Определение всех языковых строк lang
     lang_addPowerPlanInfo = _(f'{Fore.RED}WARNING: Available to add: only{Fore.CYAN}"Ultimate Performance"!')
@@ -376,6 +340,9 @@ def update_text_variables():
     log_automatic_update_disabled = _("Automatic update checking is disabled")
     log_automatic_check_updates = _("Launching an automatic update check")
     log_update_ready_install = _("The update has been downloaded and is ready for installation. Completion of the program...")
+    log_go_main_menu = _("Go to the main menu")
+    log_go_automode_menu = _("Switching to automatic settings via the main menu")
+    log_go_advanced_menu = _("Access to advanced settings via the main menu")
 
     # logs errors
     log_error_input = _("Input error in")
@@ -389,6 +356,9 @@ def update_text_variables():
     log_error_update_module = _("The update verification module is unavailable")
     log_error_auto_update_configuration_file = _("Couldn't download the configuration to check for updates")
     log_error_auto_update = _("Error when checking for updates automatically:")
+    log_error_check_update = _("Updates verification error")
+    log_add_sh = _("The scheme was successfully added:")
+    log_error_add_sh = _("Couldn't add schema:")
 
 # update text
 update_text_variables()
@@ -396,7 +366,8 @@ update_text_variables()
 def error_os():
     try:
         print(lang_error_os)
-        sys.exit(2)
+        sleep(3)
+        sys.exit(0)
     except Exception as e:
         logging.error(f"Critical error in error_os: {e}, uninstall program please!")
         print(f"{Fore.RED}Critical error in error_os: {e}")
@@ -440,142 +411,83 @@ def powercfg_geta_sh():
     else:
         error_os()
 
-def run_auto_update_check():
-    if not UPDATE_CHECKER_AVAILABLE:
-        logging.warning({log_error_update_module})
-        return False
-    
-    try:
-        config = read_config()
-        check_on_startup = config.get("check_on_startup", False)
-        
-        if not check_on_startup:
-            logging.debug(log_automatic_update_disabled)
-            return False
-        
-        logging.info(log_automatic_check_updates)
-        print(Fore.YELLOW + lang_automatic_check_updates)
-
-        
-        update_config = load_update_config()
-        if not update_config:
-            logging.error(log_error_auto_update_configuration_file)
-            return False
-        
-        # Запускаем проверку обновлений (show_prompt=False для авто-проверки)
-        need_exit = check_for_updates(
-            update_config, 
-            auto_start_check=True, 
-            show_prompt=False
-        )
-        
-        if need_exit:
-            logging.info(log_update_ready_install)
-            print(lang_check_update)
-            print(f"\n{lang_program_closed_install_update}")
-            print(lang_run_program_again_install)
-            sleep(3)
-            return True
-        else:
-            print(f"\n{lang_automatic_check_updates_completed}")
-            sleep(2)
-            return False
-            
-    except Exception as e:
-        logging.error(f"{log_error_auto_update} ({e})")
-        print(f"{lang_error_check_update}: {e}")
-        sleep(2)
-        return False
-
 def manual_check_update():
-    if not UPDATE_CHECKER_AVAILABLE:
-        print(log_error_update_module)
-        sleep(2)
-        Main_Menu.main_menu()
-        return
-    
-    try:
-        update_config = load_update_config()
-        if not update_config:
-            print(log_error_reading_configuration_file)
-            sleep(2)
-            Main_Menu.main_menu()
-            return
-        
-        # Запускаем проверку обновлений (show_prompt=True для ручной проверки)
-        need_exit = check_for_updates(
-            update_config, 
-            auto_start_check=True, 
-            show_prompt=True
-        )
-        
-        if need_exit:
-            print(lang_check_update)
-            print(f"\n{lang_program_closed_install_update}")
-            print(Fore.GREEN + "Запустите программу снова после установки.")
-            sys.exit(3)
-        else:
-            print(Fore.GREEN + "\nПроверка обновлений завершена.")
-            sleep(2)
-            Main_Menu.main_menu()
-            
-    except Exception as e:
-        print(Fore.RED + f"Ошибка при проверке обновлений: {e}")
-        logging.error(f"Ошибка при проверке обновлений: {e}")
-        sleep(2)
-        Main_Menu.main_menu()
+    clear()
+    base_path = os.path.dirname(sys.executable)
+    exe_path = os.path.join(base_path, "check_update.exe")
+    if not os.path.exists(exe_path):
+        print(f"{Fore_RED}{lang_error_file_not_found}: {exe_path}")
+        os.system("pause")
+        main_menu()
+    else:
+        subprocess.Popen([exe_path], creationflags=subprocess.CREATE_NEW_CONSOLE)
+        sys.exit(0)
 
 # Main menu program
-class Main_Menu:
-    def main_menu():
-        logging.info("Переход в главное меню")
-        while True:
-            update_text_variables()
-            clear()
-            powercfg_list()
-            print()
-            print(lang_menu_title)
-            print(f"\n1. {lang_autoConfiguration}")
-            print("2.", lang_advancedSettings)
-            print("3.", lang_check_update_main)
-            print("4.", lang_supportdeveloper)
-            print("5.", lang_settings_menu)
-            print("9.", lang_back)
-            print("0.", lang_exit)
+def main_menu():
+    logging.info(log_go_main_menu)
+    while True:
+        update_text_variables()
+        clear()
+        powercfg_list()
+        print()
+        print(lang_menu_title)
+        print(f"\n1. {lang_autoConfiguration}")
+        print("2.", lang_advancedSettings)
+        print("3.", lang_check_update_main)
+        print("4.", lang_supportdeveloper)
+        print("5.", lang_settings_menu)
+        print("6.", lang_back)
+        print("7.", lang_exit)
             
-            main_menu = input(lang_choice).lower()
-            if main_menu == "1":
-                logging.info("Переход в автоматические настройки через главное меню")
-                automode_menu()
-                break
-            elif main_menu == "2":
-                logging.info("Переход в расширенные настройки через главное меню")
-                advancedSettings()
-                break
-            elif main_menu == "3":
-                logging.info("Ручная проверка обновлений через главное меню")
-                manual_check_update()
-                break
-            elif main_menu == "4":
-                logging.info("Поддержка разработчика через главное меню")
-                support_developer()
-                break
-            elif main_menu == "5":
-                logging.info("Переход в настройки через главное меню")
-                settings_menu()
-                break
-            elif main_menu in ["0", "exit", "end", "e"]:
-                end()
-                break
-            elif main_menu in ["ru", "r", "ру", "р"]:
-                language_setting('ru')
-            elif main_menu == "en":
-                language_setting('en')
-            else:
-                clear()
-                logging.error('Неверный ввод или сообщение было написано с ошибкой (Главное меню)')
-                print(lang_error_input)
-                sleep(1)
+        main_menu = input(lang_choice).lower()
+        if main_menu == "1":
+            logging.info(log_go_automode_menu)
+            automode_menu()
+            break
+        elif main_menu == "2":
+            logging.info(log_go_advanced_menu)
+            advancedSettings()
+            break
+        elif main_menu == "3":
+            logging.info(_("Manual update check via main menu"))
+            manual_check_update()
+            break
+        elif main_menu == "4":
+            logging.info(_("Developer support via main menu"))
+            support_developer()
+            break
+        elif main_menu == "5":
+            logging.info(_("Go to settings via main menu"))
+            settings_menu()
+            break
+        elif main_menu in ["9", "6", "back", "b"]:
+            clear()
+            print(f"{lang_error_back_main_menu}")
+            sleep(1)
+        elif main_menu in ["0", "7", "exit", "end", "e"]:
+            end()
+            break
+        elif main_menu in ["ru", "r", "ру", "р"]:
+            language_setting('ru')
+            update_text_variables()
+        elif main_menu == "en":
+            language_setting('en')
+            update_text_variables()
+        else:
+            clear()
+            logging.error(f"{log_error_input} (Main_menu)")
+            print(f"{lang_error_input}")
+            sleep(1)
+
+def cheack_os():
+    logging.info('Checking the system')
+    if platform.system() == "Windows":
+        logging.info('The system is recognized as Windows')
+        main_menu()
+    else:
+        logging.error(f'The system is recognized as {platform.system()}')
+        error_os()
 
 def advancedSettings():
     logging.debug('Переход в расширенные параметры электропитания')
@@ -614,7 +526,7 @@ def advancedSettings():
             break
         elif advancedSettings in ["9", "back", "b"]:
             logging.info('Переход в главное меню через расширенные настройки')
-            Main_Menu.main_menu()
+            main_menu()
             break
         elif advancedSettings in ["0", "exit", "end", "e"]:
             logging.info('Выход из приложения через расширенные настройки')
@@ -868,7 +780,7 @@ def add_scheme():
             add_scheme_max_perfomance()
             break
         elif add_scheme in ["8", "main", "m"]:
-            Main_Menu.main_menu()
+            main_menu()
             break
         elif add_scheme in ["9", "back", "b"]:
             advancedSettings()
@@ -910,8 +822,6 @@ def add_scheme_max_perfomance():
     sleep(2)
     advancedSettings()
 
-
-
 def activate_scheme():
     while True:
         clear()
@@ -941,7 +851,7 @@ def activate_scheme():
             activate_scheme_manual_input()
             break
         elif activate_scheme in ["9", "back", "b"]:
-            Main_Menu.main_menu()
+            main_menu()
             break
         elif activate_scheme in ["0", "exit", "end", "e"]:
             end()
@@ -1091,11 +1001,11 @@ def activate_scheme_manual_input():
         print("...")
         logging.info(f'{log_activate_sh} {lang_manual_input}')
         clear()
-        print(lang_max_performance_scheme_activated)
-    except subprocess.CalledProcessError as e:
+        print(lang_activate_scheme + id_power_sh_send)
+    except Exception as e:
         clear()
         logging.error(f'{log_error_activate_sh} {id_power_sh_send} ({e}) [{cmd}]')
-        print(lang_error_id_power_scheme)
+        print(lang_error_id_power_scheme + id_power_sh_send)
     sleep(1)
     advancedSettings()
 
@@ -1135,7 +1045,7 @@ def open_url_support_developer(url):
         url = "https://pay.cloudtips.ru/p/0cdee068"
         open_url_support_developer(url)
     else:
-        Main_Menu.main_menu()
+        main_menu()
 
 def settings_menu():
     logging.debug("Переход в меню настроек")
@@ -1163,7 +1073,7 @@ def settings_menu():
             beta_settings()
             break
         elif settings_menu in ["4", "9", "back", "b"]:
-            Main_Menu.main_menu()
+            main_menu()
             break
         elif settings_menu in ["5", "0", "exit", "end", "e"]:
             end()
@@ -1174,7 +1084,7 @@ def settings_menu():
             language_setting('en')
         else:
             clear()
-            print(lang_error_input)
+            print(f"{lang_error_input}")
             sleep(1)
 
 def setting_menu_scheme():
@@ -1265,7 +1175,7 @@ def language_settings():
         else:
             clear()
             logging.error(f"{log_error_input} {lang_language_settings}")
-            print(lang_error_input)
+            print(f"{Fore.RED} {lang_error_input}")
             sleep(1)
 
 def beta_settings():
@@ -1338,7 +1248,7 @@ def automode_menu():
             break
         elif automode in ["9", "4", "back", "b"]:
             logging.info("Возврат в главное меню")
-            Main_Menu.main_menu()
+            main_menu()
             break
         elif automode in ["0", "5", "exit", "end", "e"]:
             end()
@@ -1397,7 +1307,7 @@ def automode1_end_menu():
 
         autoend1 = input(lang_choice).lower()
         if autoend1 in ["1", "9", "back", "b"]:
-            Main_Menu.main_menu()
+            main_menu()
             break
         elif autoend1 in ["2", "0", "exit", "end", "e"]:
             end()
@@ -1453,7 +1363,7 @@ def automode2_end_menu():
 
         autoend2 = input(lang_choice).lower()
         if autoend2 in ["1", "9", "back", "b"]:
-            Main_Menu.main_menu()
+            main_menu()
             break
         elif autoend2 in ["2", "0", "exit", "end", "e"]:
             end()
@@ -1509,7 +1419,7 @@ def automode3_end_menu():
 
         autoend3 = input(lang_choice).lower()
         if autoend3 in ["1", "9", "back", "b"]:
-            Main_Menu.main_menu()
+            main_menu()
             break
         elif autoend3 in ["2","0", "exit", "end", "e"]:
             end()
@@ -1521,10 +1431,4 @@ def automode3_end_menu():
 
 if __name__ == "__main__":
     config = apply_language_from_config()
-
-    need_exit = run_auto_update_check()
-    
-    if need_exit:
-        sys.exit(0)
-    else:
-        cheack_os()
+    cheack_os()
