@@ -1,0 +1,427 @@
+# Translations template for PROJECT.
+# Copyright (C) 2025-2026 BrocatScript
+# This file is distributed under the same license as the PROJECT project.
+# FIRST AUTHOR <brocatscript@yandex.com>, 2025-2026.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: v1.0.2 beta\n"
+"Report-Msgid-Bugs-To: brocatscript@yandex.com\n"
+"POT-Creation-Date: 2025-12-21 23:33+0300\n"
+"PO-Revision-Date: 2026-02-06 22:58+0300\n"
+"Last-Translator: BrocatScript <brocatscript@yandex.com>\n"
+"Language-Team: BrocatScript LANGUAGE <>\n"
+"MIME-Version: 1.0.2 beta\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+
+msgid "{Fore.RED}WARNING: Available to add: only{Fore.CYAN}\"Ultimate Performance\"!"
+msgstr "{Fore.RED}ВНИМАНИЕ! Доступно для добавления: Только {Fore.WHITE}\"Максимальная производительность\"!"
+
+msgid "{Fore.RED}WARNING: All other power plans will be deleted after you select one!"
+msgstr "{Fore.RED}ВНИМАНИЕ! После выбора схемы электропитания все остальные будут удалены!"
+
+msgid "Enter the number: "
+msgstr "Введите номер: "
+
+msgid "Back to main menu"
+msgstr "Вернуться в главное меню"
+
+msgid "Back to Advanced Settings"
+msgstr "Вернуться в расширенные параметры"
+
+msgid "Exit"
+msgstr "Выйти"
+
+msgid "Maximum performance"
+msgstr "Максимальная производительность"
+
+msgid "High performance"
+msgstr "Высокая производительность"
+
+msgid "Balanced"
+msgstr "Сбалансированная"
+
+msgid "Power saving"
+msgstr "Экономия энергии"
+
+msgid "Change language"
+msgstr "Сменить язык"
+
+msgid "Current language: English"
+msgstr "Текущий язык: Русский"
+
+msgid "Select language:"
+msgstr "Выберите язык:"
+
+msgid "Русский"
+msgstr "Русский"
+
+msgid "English"
+msgstr "English"
+
+msgid "Settings"
+msgstr "Настройки"
+
+msgid "Language settings"
+msgstr "Настройки языка"
+
+msgid "Main Menu"
+msgstr "Главное меню"
+
+msgid "Advanced settings"
+msgstr "Расширенные параметры"
+
+msgid "Automatic configuration"
+msgstr "Автоматическая настройка"
+
+msgid "Show system information"
+msgstr "Показать системную информацию"
+
+msgid "Performance test"
+msgstr "Тест производительности"
+
+msgid "Check for updates"
+msgstr "Проверить обновления"
+
+msgid "Update check"
+msgstr "Проверка обновлений"
+
+msgid "About"
+msgstr "О программе"
+
+msgid "System information"
+msgstr "Системная информация"
+
+msgid "Author: BrocatScript"
+msgstr "Автор: BrocatScript"
+
+msgid "Support the author"
+msgstr "Поддержать автора"
+
+msgid "Current version:"
+msgstr "Текущая версия:"
+
+msgid "Latest version:"
+msgstr "Последняя версия:"
+
+msgid "New version available:"
+msgstr "Доступна новая версия:"
+
+msgid "Download update"
+msgstr "Скачать обновелние"
+
+msgid "Skip update"
+msgstr "Продолжить без обновления"
+
+msgid "You have the {Fore.GREEN}latest{Fore.RESET} version!"
+msgstr "У вас {Fore.GREEN}последняя{Fore.RESET} версия!"
+
+msgid "Opening the page"
+msgstr "Открываю страницу"
+
+msgid "Choose the required mode"
+msgstr "Выберите нужный режим"
+
+msgid "Maximum power consumption"
+msgstr "Максимальное энергопотребление"
+
+msgid "Power consumption balance"
+msgstr "Баланс электропотребления"
+
+msgid "Lowers battery consumption"
+msgstr "Снижает энергопотребление батареи"
+
+msgid "Fore.CYAN}Result before:"
+msgstr "{Fore.CYAN}Результат до:"
+
+msgid "{Fore.CYAN}Result after:"
+msgstr "{Fore.CYAN}Результат после:"
+
+msgid "{Fore.CYAN}Result:"
+msgstr "{Fore.CYAN}Результат:"
+
+msgid "Delete the scheme"
+msgstr "Удалить схему"
+
+msgid "Reset the schemes"
+msgstr "Сбросить схемы"
+
+msgid "Add a scheme"
+msgstr "Добавить схему"
+
+msgid "Activate the scheme"
+msgstr "Активировать схему"
+
+msgid "List all schemes"
+msgstr "Узнать список схем"
+
+msgid "Manual input"
+msgstr "Ручной ввод"
+
+msgid "Go back"
+msgstr "Вернуться назад"
+
+msgid "Scheme \"Balanced\" activated!"
+msgstr "Схема \"Сбалансированая\" активирована!"
+
+msgid "Scheme \"High performance\" activated!"
+msgstr "Схема \"Высокая производительность\" активирована!"
+
+msgid "Scheme \"Maximum performance\" activated!"
+msgstr "Схема \"Максимальная производительность\" активирована!"
+
+msgid "Scheme \"Power saving\" activated!"
+msgstr "Схема \"Экономия энергии\" активирована!"
+
+msgid "Enter the power scheme ID: "
+msgstr "Введите ID схемы электропитания: "
+
+msgid "Scheme {id_select_sh_send} activated!"
+msgstr "Схема {id_select_sh_send} активирована!"
+
+msgid "Scheme \"Maximum Performance\" successfully added!"
+msgstr "Схема \"Максимальная производительность\" успешно добавлена!"
+
+msgid "What do you want to delete?"
+msgstr "Что вы хотите удалить?"
+
+msgid "Scheme \"Balanced\" successfully deleted!"
+msgstr "Схема \"Сбалансированная\" успешно удалена!"
+
+msgid "Scheme \"High performance\" succesfull deleted!"
+msgstr "Схема \"Высокая производительность\" успешно удалена!"
+
+msgid "Scheme \"Maximum performance\" succesfull deleted!"
+msgstr "Схема \"Максимальная производительность\" успешно удалена!"
+
+msgid "Scheme \"Power saving\" succesfull deleted!"
+msgstr "Схема \"Экономия энергии\" успешно удалена!"
+
+msgid "Scheme successfully deleted!"
+msgstr "Схема успешно удалена!"
+
+msgid "Go back to select which scheme to delete?"
+msgstr "Вернуться к выбору удаления схем?"
+
+msgid "Changes saved!"
+msgstr "Изменения сохранены!"
+
+msgid "Set the display turn‑off time: "
+msgstr "Укажите время отключения дисплея: "
+
+msgid "minutes"
+msgstr "минут"
+
+msgid "Advanced scheme settings"
+msgstr "Расширенные настройки схем"
+
+msgid "Display off time"
+msgstr "Время выключения дисплея"
+
+msgid "Time to enter sleep mode"
+msgstr "Время перехода в спящий режим"
+
+msgid "Hard disk shutdown time"
+msgstr "Время выключения жесткого диска"
+
+msgid "Current power supply circuit settings"
+msgstr "Текущие настройки схемы питания"
+
+msgid "Beta Version Settings"
+msgstr "Настройки beta-версий"
+
+msgid "Beta updates {Fore.CYAN}enabled"
+msgstr "Beta-версии обновлений {Fore.CYAN}включены"
+
+msgid "Beta updates {Fore.CYAN}disabled"
+msgstr "Beta-обновления {Fore.CYAN}выключены"
+
+msgid "{Fore.CYAN}Enable{Fore.RESET} beta updates"
+msgstr "{Fore.CYAN}Включить{Fore.RESET} beta-версии обновлений"
+
+msgid "{Fore.CYAN}Disable{Fore.RESET} beta updates"
+msgstr "{Fore.CYAN}Выключить{Fore.RESET} beta-версии обновлений"
+
+msgid "Settings saved"
+msgstr "Настройки сохранены"
+
+msgid "A fix for the update is available:"
+msgstr "Доступно исправление для этого обновления:"
+
+msgid "Beta update available:"
+msgstr "Доступно beta-обновление:"
+
+msgid "Operation completed successfully!"
+msgstr "Операция успешно завершена!"
+
+msgid "Automatic check for updates"
+msgstr "Автоматическая проверка наличия обновлений"
+
+msgid "The program will be closed to install the update."
+msgstr "Программа будет закрыта для установки обновления."
+
+msgid "Run the program again after installation."
+msgstr "После установки запустите программу еще раз."
+
+msgid "The automatic update check is completed."
+msgstr "Автоматическая проверка обновлений завершена."
+
+# errors
+
+msgid "{Fore.RED}ERROR: YOUR SYSTEM IS NOT {Fore.CYAN}(WINDOWS 10/11){Fore.RESET}, THE PROGRAM IS TERMINATING!"
+msgstr "{Fore.RED}ОШИБКА: ВАША СИСТЕМА НЕ ЯВЛЯЕТСЯ {Fore.CYAN}(WINDOWS 10/11){Fore.RESET}, ПРОГРАММА ЗАКРЫВАЕТСЯ!"
+
+msgid "{Fore.RED}ERROR: couldn't restore schemas to default settings"
+msgstr "{Fore.RED}Ошибка: не удалось восстановить схемы до настроек по умолчанию"
+
+msgid "{Fore.RED}ERROR: Cannot set shutdown time to {Fore.CYAN}\"{time_timeout_monitor}\""
+msgstr "{Fore.RED}Ошибка: невозможно задать время отключения {Fore.CYAN}\"{time_timeout_monitor}\""
+
+msgid "{Fore.RED}ERROR: Cannot set {Fore.CYAN}0 minutes!"
+msgstr "{Fore.RED}Ошибка: невозможно выставить {Fore.CYAN}0 минут!"
+
+msgid "{Fore.RED}ERROR: Cannot set {Fore.CYAN}10 minutes!"
+msgstr "{Fore.RED}Ошибка: невозможно выставить {Fore.CYAN}10 минут!"
+
+msgid "{Fore.RED}ERROR: Cannot set {Fore.CYAN}15 minutes!"
+msgstr "{Fore.RED}Ошибка: невозможно выставить {Fore.CYAN}15 минут!"
+
+msgid "{Fore.RED}ERROR: Cannot set {Fore.CYAN}20 minutes!"
+msgstr "{Fore.RED}Ошибка: невозможно выставить {Fore.CYAN}20 минут!"
+
+msgid "{Fore.RED}ERROR! You cannot go back because this is the main menu."
+msgstr "{Fore.RED}ОШИБКА! Вы не можете вернуться назад, так как это главное меню."
+
+msgid "{Fore.RED}ERROR: Failed to add the power scheme {Fore.WHITE}\"Maximum Performance\"!"
+msgstr "{Fore.RED}ОШИБКА: Не удалось добавить схему электропитания {Fore.WHITE}\"Максимальная производительность\"!"
+
+msgid "{Fore.RED}ERROR: Scheme with ID {Fore.WHITE}{id_select_sh_send}{Fore.RED} not found!"
+msgstr "{Fore.RED}ОШИБКА: Схема с ID {Fore.WHITE}{id_select_sh_send}{Fore.RED} не найдена!"
+
+msgid "{Fore.RED}ERROR: Scheme \"Power saving\" not found!"
+msgstr "{Fore.RED}ОШИБКА: Схема \"Экономия энергии\" не найдена!"
+
+msgid "{Fore.RED}ERROR: Scheme \"Maximum performance\" not found!"
+msgstr "{Fore.RED}Схема \"Максимальная производительность\" не найдена!"
+
+msgid "{Fore.RED}ERROR: Scheme \"High performance\" not found!"
+msgstr "{Fore.RED}ОШИБКА: Схема \"Высокая производительность\" не найдена!"
+
+msgid "{Fore.RED}ERROR: Scheme \"Balanced\" not found"
+msgstr "{Fore.RED}ОШИБКА: Схема \"Сбалансированая\" не найдена!"
+
+msgid "{Fore.RED}ERROR: Update check failed!"
+msgstr "{Fore.RED}ОШИБКА: Не удалось проверить обновления!"
+
+msgid "{Fore.RED}ERROR: The message is written incorrectly or it is empty! {Fore.WHITE}Try again!"
+msgstr "{Fore.RED}ОШИБКА: Сообщение написано неправильно или его нет! {Fore.WHITE}Попробуйте снова!"
+
+msgid "{Fore.RED}ERROR: An error occurred during the automatic configuration!"
+msgstr "{Fore.RED}ОШИБКА: При автоматической настройке произошла ошибка!"
+
+# logs
+
+msgid "Language changed to"
+msgstr "Язык изменён на"
+
+msgid "Completion of the program..."
+msgstr "Завершение программы..."
+
+msgid "Selected: deleting the scheme"
+msgstr "Выбрано: удаление схемы"
+
+msgid "Selected: add the scheme"
+msgstr "Выбрано: добавление схемы"
+
+msgid "Selected: activate the scheme"
+msgstr "Выбрано: активация схемы"
+
+msgid "The scheme has been successfully activated. Activated scheme:"
+msgstr "Схема была успешно активирована. Активированная схема:"
+
+msgid "In the automatic menu, the following was selected:"
+msgstr "В автоматическом меню было выбрано:"
+
+msgid "In progress:"
+msgstr "В процессе:"
+
+msgid "The configuration file is uploaded:"
+msgstr "Файл конфигурации загружен:"
+
+msgid "A configuration file with default settings has been created:"
+msgstr "Файл конфигурации с настройками по умолчанию создан:"
+
+msgid "The configuration file is saved:"
+msgstr "Файл конфигурации сохранен:"
+
+msgid "The language is set:"
+msgstr "Язык установлен:"
+
+msgid "Automatic language detection: system language ="
+msgstr "Автоматическое определение языка: системный язык ="
+
+msgid "The saved language is used:"
+msgstr "Используется сохраненный язык:"
+
+msgid "Automatic language verification is disabled"
+msgstr "Автоматическая проверка языка отключена"
+
+msgid "Automatic update checking is disabled"
+msgstr "Автоматическая проверка обновлений отключена"
+
+msgid "Launching an automatic update check"
+msgstr "Запуск автоматической проверки обновлений"
+
+msgid "The update has been downloaded and is ready for installation. Completion of the program..."
+msgstr "Обновление загружено и готово к установке. Завершение работы программы..."
+
+msgid "Go to the main menu"
+msgstr "Переход в главное меню"
+
+msgid "Switching to automatic settings via the main menu"
+msgstr "Переход в автоматические настройки через главное меню"
+
+msgid "Access to advanced settings via the main menu"
+msgstr "Переход в расширенные настройки через главное меню"
+
+# logs errors
+
+msgid "Input error in"
+msgstr "Ошибка ввода в"
+
+msgid "A critical error occurred when activating the scheme:"
+msgstr "При активации схемы произошла критическая ошибка:"
+
+msgid "An error occurred during the automatic configuration:"
+msgstr "При автоматической настройке произошла ошибка:"
+
+msgid "The configuration file was not found. The default settings are used."
+msgstr "Файл конфигурации не найден. Используются настройки по умолчанию."
+
+msgid "Error when reading the configuration file:"
+msgstr "Ошибка при чтении файла конфигурации:"
+
+msgid "Error saving the configuration file:"
+msgstr "Ошибка при сохранении файла конфигурации:"
+
+msgid "Error when setting the language:"
+msgstr "Ошибка при настройке языка:"
+
+msgid "Error when executing"
+msgstr "Ошибка при выполнении"
+
+msgid "The update verification module is unavailable"
+msgstr "Модуль проверки обновлений недоступен"
+
+msgid "Couldn't download the configuration to check for updates"
+msgstr "Не удалось загрузить конфигурацию для проверки обновлений"
+
+msgid "Error when checking for updates automatically:"
+msgstr "Ошибка при автоматической проверке обновлений:"
+
+msgid "Updates verification error"
+msgstr "Ошибка при проверке обновлений"

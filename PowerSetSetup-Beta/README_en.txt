@@ -10,7 +10,7 @@ PowerSetSetup is a powerful Windows utility designed to manage power settings on
 - 🔍 Retrieving power scheme IDs
 - ⚙️ Optimizing power consumption
 
-Copyright © 2025 BrocatScript. All rights reserved.
+Copyright © 2025-2026 BrocatScript. All rights reserved.
 
 🚀 Installation
 1. ▶ Download PowerSetSetup_installer.exe

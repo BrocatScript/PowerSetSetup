@@ -1,4 +1,4 @@
-import sys
+﻿import sys
 import subprocess
 import os
 import json
@@ -14,7 +14,7 @@ from datetime import datetime
 sleep = time.sleep
 
 Name_Program = "PowerSetSetup"
-version = "Dev 1.0.2"
+version = "1.0.2-beta+build.1"
 
 LOG_DIR = "logs"
 LOG_FILE = os.path.join(LOG_DIR, "logs.txt")
@@ -44,11 +44,12 @@ def clear():
 
 init(autoreset=True)
 
-# Перевод
+# Локализация
 LOCALE_DIR = 'data/config/locale'
 DOMAIN = 'messages'
 
 _ = None
+current_lang = 'en'
 
 def get_system_lang():
     try:
@@ -84,8 +85,8 @@ def read_config():
         "auto_language": True,
         "allow_beta": False,
         "auto_download_install": False,
-        "auto_download_install": False,
         "version": "1.0.2 beta",
+        "build": 1,
         "last_modified": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
         "description": "settings for PowerSetSetup"
     }
@@ -121,12 +122,17 @@ def save_config(config):
         return False
 
 def setup_localization(lang_code):
-    global _
+    global _, current_lang
     try:
-        translation = gettext.translation(DOMAIN, LOCALE_DIR, languages=[lang_code], fallback=True)
+        normalized_lang = (lang_code or "en").lower()[:2]
+        current_lang = normalized_lang
+        if normalized_lang == "en":
+            translation = gettext.NullTranslations()
+        else:
+            translation = gettext.translation(DOMAIN, LOCALE_DIR, languages=[normalized_lang], fallback=True)
         translation.install()
         _ = translation.gettext
-        logging.info(f"The language is set: {lang_code}")
+        logging.info(f"The language is set: {normalized_lang}")
     except Exception as e:
         logging.error(f"Error when setting the language: {lang_code}: {e}")
         _ = gettext.gettext
@@ -155,8 +161,6 @@ def language_setting(new_lang):
     setup_localization(new_lang)
 
 config = apply_language_from_config()
-current_lang = config.get("language", "en")
-setup_localization(current_lang)
 
 id_power_sh_send = ""
 
@@ -278,7 +282,7 @@ def update_text_variables():
     lang_back_select_delet_scheme = _("Go back to select which scheme to delete?")
     lang_settings_succesfull = _("Changes saved!")
     lang_successfully = _("Operation completed successfully!")
-    lang_enter_timeout_minutes = _("Set the display turn‑off time: ")
+    lang_enter_timeout_minutes = _("Set the display turn‑off time:")
     lang_minutes = _("minutes")
     lang_settings_menu_scheme = _("Advanced scheme settings")
     lang_settings_timeout_monitor = _("Display off time")
@@ -360,6 +364,8 @@ def update_text_variables():
     log_add_sh = _("The scheme was successfully added:")
     log_error_add_sh = _("Couldn't add schema:")
 
+    # это нормально если они помечаются красным цветом ↑
+
 # update text
 update_text_variables()
 
@@ -416,7 +422,7 @@ def manual_check_update():
     base_path = os.path.dirname(sys.executable)
     exe_path = os.path.join(base_path, "check_update.exe")
     if not os.path.exists(exe_path):
-        print(f"{Fore_RED}{lang_error_file_not_found}: {exe_path}")
+        print(f"{Fore.RED}Error: {exe_path}") # {lang_error_file_not_found}
         os.system("pause")
         main_menu()
     else:
@@ -450,15 +456,15 @@ def main_menu():
             advancedSettings()
             break
         elif main_menu == "3":
-            logging.info(_("Manual update check via main menu"))
+            logging.info(_("Manual update check via main menu")) # временно
             manual_check_update()
             break
         elif main_menu == "4":
-            logging.info(_("Developer support via main menu"))
+            logging.info(_("Developer support via main menu")) # временно
             support_developer()
             break
         elif main_menu == "5":
-            logging.info(_("Go to settings via main menu"))
+            logging.info(_("Go to settings via main menu")) # временно
             settings_menu()
             break
         elif main_menu in ["9", "6", "back", "b"]:
@@ -494,7 +500,7 @@ def advancedSettings():
     while True:
         clear()
         powercfg_list()
-        print('\nРасширенные параметры')
+        print('\nРасширенные параметры электропитания')
         print(f'\n1. {lang_delete_scheme}')
         print(f'2. {lang_reset_scheme}')
         print(f'3. {lang_add_scheme}')
@@ -509,7 +515,7 @@ def advancedSettings():
             delete_scheme()
             break
         elif advancedSettings == "2":
-            logging.info('Переход в функциию сброса схем через расширенные настройки')
+            logging.info('Переход в функцию сброса схем через расширенные настройки')
             reset_scheme()
             break
         elif advancedSettings == "3":
@@ -517,7 +523,7 @@ def advancedSettings():
             add_scheme()
             break
         elif advancedSettings == "4":
-            logging.info('Переход в активирование схем через расширенные настройки')
+            logging.info('Переход в активацию схем через расширенные настройки')
             activate_scheme()
             break
         elif advancedSettings == "5":
@@ -1023,7 +1029,7 @@ def support_developer():
     elif current_lang == "en":
         url = "https://badgen.net/badge/%D1%81%D1%81%D1%8B%D0%BB%D0%BA%D0%B0/%D0%B2%20%D1%80%D0%B0%D0%B7%D1%80%D0%B0%D0%B1%D0%BE%D1%82%D0%BA%D0%B5/red"
     else:
-        url = "для вас нет ссылки"
+        url = "для вас нет ссылки, потому что ваша система не поддерживается для этой функции!"
     open_url_support_developer(url)
 
 def open_url_support_developer(url):
@@ -1033,7 +1039,7 @@ def open_url_support_developer(url):
     try:
         webbrowser.open(url)
         logging.info(f'Ссылка поддержки автора открыта: {url}')
-        print(f'Cсылка открыта, если вам удобен другой сервис, то нажмите 2')
+        print(f'Ссылка открыта, если вам удобно другой сервис, то нажмите 2')
     except Exception as e:
         logging.error(f"Не удалось открыть ссылку, ошибка {e}")
         print(f"Не удалось открыть ссылку, ошибка {e}")
@@ -1066,8 +1072,8 @@ def settings_menu():
         elif settings_menu == "2":
             clear()
             logging.error("Эта функция недоступна, потому что может навредить вашему компьютеру! Она не готова!")
-            print("ERROR: It is beta test!!!")
-            print("Ошибка: Это тестовая версия!!!")
+            print(f"{Fore.RED}ERROR: It is beta test!!!")
+            print(f"{Fore.RED}Ошибка: Это тестовая версия!!!")
             sleep(2)
         elif settings_menu in ["3", "beta"]:
             beta_settings()
@@ -1096,9 +1102,9 @@ def setting_menu_scheme():
         print(f"\n1. {lang_settings_timeout_monitor}")
         print("2.", lang_settings_time_sleep)
         print("3.", lang_settings_timeout_disk)
-        print("4.", lang_settings_hibernate)
-        print("5.", lang_send_othet) # /A = Отчет о доступных в системе состояниях спящего режима.
-        print("6.", lang_next)
+        # print("4.", lang_settings_hibernate)
+        # print("5.", lang_send_othet) # /A = Отчет о доступных в системе состояниях спящего режима.
+        # print("6.", lang_next)
 
 def setting_menu_scheme_page2():
     while True:
@@ -1106,16 +1112,17 @@ def setting_menu_scheme_page2():
         print(f"{lang_settings_menu_scheme}\n")
         print(lang_config_power_plan)
         powercfg_geta_sh()
-        print(f"\n1. {lang_}")
-        print("2.", lang_)
-        print("3.", lang_battery_report) # /BATTERYREPORT
-        print("4.", lang_settings_hibernate) # powercfg /systempowerreport
-        print("5.", lang_send_othet) # /A = Отчет о доступных в системе состояниях спящего режима.
-        print("6.", lang_next)
+        # print(f"\n1. {lang_}")
+        # print("2.", lang_)
+        # print("3.", lang_battery_report) # /BATTERYREPORT
+        # print("4.", lang_settings_hibernate) # powercfg /systempowerreport
+        # print("5.", lang_send_othet) #  /A = Отчет о доступных в системе состояниях спящего режима.
+        # print("6.", lang_next)
 
 
 
 def language_settings():
+    global current_lang
     logging.debug("Переход в меню настроек выбора языка")
     while True:
         clear()
@@ -1247,7 +1254,7 @@ def automode_menu():
             automode3()
             break
         elif automode in ["9", "4", "back", "b"]:
-            logging.info("Возврат в главное меню")
+            logging.info("Переход в главное меню")
             main_menu()
             break
         elif automode in ["0", "5", "exit", "end", "e"]:
@@ -1259,7 +1266,7 @@ def automode_menu():
             sleep(1)
 
 def automode1():
-    logging.info("Настройка максимальной производительности")
+    logging.info("Переход в меню настройки максимальной производительности")
     clear()
     print(".")
 
@@ -1318,7 +1325,7 @@ def automode1_end_menu():
             sleep(1)
 
 def automode2():
-    logging.info("Настройка сбалансированного режима")
+    logging.info("Переход в меню настройки сбалансированного режима")
     clear()
     print(".")
     
@@ -1374,7 +1381,7 @@ def automode2_end_menu():
             sleep(1)
 
 def automode3():
-    logging.info("Настройка режима энергосбережения")
+    logging.info("Переход в меню настройки режима энергосбережения")
     clear()
     print(".")
     

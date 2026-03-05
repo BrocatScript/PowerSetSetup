@@ -18,7 +18,7 @@ CONFIG_PATH = os.path.join(
 )
 
 Name_Program = "Check_update"
-version = "Dev 1.0.0"
+version_soft = "1.0.2-beta+build.1"
 
 LOG_DIR = "logs"
 LOG_FILE = os.path.join(LOG_DIR, "logs.txt")
@@ -35,7 +35,7 @@ logging.basicConfig(
 )
 
 logger = logging.getLogger()
-logging.info(f"--- {Name_Program} {version} ---")
+logging.info(f"--- {Name_Program} {version_soft} ---")
 
 VERSION_URL = "https://raw.githubusercontent.com/BrocatScript/PowerSetSetup/main/version.json"
 
@@ -101,13 +101,13 @@ def check_for_updates():
         if not isinstance(data, dict):
             print(f"Ошибка: сервер вернул не объект JSON, а {type(data).__name__}")
             os.system("pause")
-            return
+            open_powersetsetup()
 
         server_version_str = data.get("version")
         if not server_version_str:
             print("Ошибка: в JSON отсутствует поле 'version'")
             os.system("pause")
-            return
+            open_powersetsetup()
 
         print(f"🌐: {server_version_str}")
         print(f"🖥️: {current_version_str}")
@@ -119,7 +119,7 @@ def check_for_updates():
             print("✅ Update beta: ❌ The beta version is not available (allow_beta = false).")
             print("🌐🤜 🤛🖥️👍")
             os.system("pause")
-            return
+            open_powersetsetup()
 
         if server_version > current_version:
             print(f"✅ Update: {server_version_str}")
@@ -128,7 +128,8 @@ def check_for_updates():
                 if auto_download:
                     download_and_update(download_url)
                 else:
-                    answer = input("Download the update?").lower()
+                    print("\nDownload the update?")
+                    answer = input("Enter the choice: ").lower()
                     if answer in ["y", "yes", "д", "да"]:
                         download_and_update(download_url)
                     else:
@@ -136,8 +137,10 @@ def check_for_updates():
                         open_powersetsetup()
             else:
                 print("ERROR: Error code: 1x1013")
+                open_powersetsetup()
         else:
             print("✅ 🖥️ = 🌐👍")
+            sleep(2)
             open_powersetsetup()
 
     except Exception as e:
@@ -182,7 +185,8 @@ def download_and_update(url: str):
 
         script_dir = os.path.dirname(sys.argv[0])
         update_exe = os.path.join(script_dir, "update.exe")
-
+        
+        sleep(2)
         if os.path.isfile(update_exe):
             print(f"\nStart {update_exe}...\n\n\n")
             subprocess.Popen([update_exe, temp_dir])

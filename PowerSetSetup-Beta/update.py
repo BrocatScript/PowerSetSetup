@@ -23,7 +23,7 @@ logging.basicConfig(
 )
 
 Name_Program = "PowerSetSetup Update"
-version = "1.0.0 Dev"
+version = "1.0.2-beta+build.1"
 
 logger = logging.getLogger()
 logging.info(f"--- {Name_Program} {version} ---")
