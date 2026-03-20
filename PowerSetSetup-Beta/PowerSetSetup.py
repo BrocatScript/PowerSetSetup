@@ -10,11 +10,17 @@ import logging
 import locale
 import webbrowser
 from datetime import datetime
+import re
+import random
+import tempfile
+from packaging.version import parse as parse_version
+import requests
 
 sleep = time.sleep
 
 Name_Program = "PowerSetSetup"
 version = "1.0.2-beta+build.1"
+VERSION_URL = "https://raw.githubusercontent.com/BrocatScript/PowerSetSetup/main/version.json"
 
 LOG_DIR = "logs"
 LOG_FILE = os.path.join(LOG_DIR, "logs.txt")
@@ -78,47 +84,56 @@ def get_system_lang():
         logging.error(f"Ошибка при определении языка системы: {e}")
         return 'en'
 
-def read_config():
+_CONFIG_CACHE = None
+
+def load_config(force_reload=False):
+    global _CONFIG_CACHE
+    if _CONFIG_CACHE is not None and not force_reload:
+        return _CONFIG_CACHE
     config_path = os.path.join('data', 'config', 'config.json')
     default_config = {
         "language": "en",
         "auto_language": True,
-        "allow_beta": False,
+        "allow_beta": True,
         "auto_download_install": False,
-        "version": "1.0.2 beta",
+        "version": "1.0.2-beta",
         "build": 1,
         "last_modified": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
         "description": "settings for PowerSetSetup"
     }
-    
+
     try:
         if os.path.exists(config_path):
             with open(config_path, 'r', encoding='utf-8') as f:
                 config = json.load(f)
                 logging.info(f"The configuration file is uploaded: {config_path}")
-                return config
         else:
             logging.warning(f"The configuration file was not found. The default settings are used. File ({config_path})")
+            config = default_config
             os.makedirs(os.path.dirname(config_path), exist_ok=True)
             with open(config_path, 'w', encoding='utf-8') as f:
                 json.dump(default_config, f, indent=4, ensure_ascii=False)
-            logging.info(f"A configuration file with default settings has been created: {config_path}")
-            return default_config
     except Exception as e:
-        logging.error(f"Error when reading the configuration file: {e}")
-        return default_config
+        logging.error(f"Error when reading the config.json: {e}")
+        print(f"Error when reading the config.json: {e}")
+        config = default_config
+        sleep(2)
+    _CONFIG_CACHE = config
+    return config
 
 def save_config(config):
+    global _CONFIG_CACHE
     config_path = os.path.join('data', 'config', 'config.json')
     try:
         config["last_modified"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         os.makedirs(os.path.dirname(config_path), exist_ok=True)
         with open(config_path, 'w', encoding='utf-8') as f:
             json.dump(config, f, indent=4, ensure_ascii=False)
-        logging.info(f"{log_configuration_file_saved} {config_path}")
+        _CONFIG_CACHE = config  # обновляем кеш
+        logging.info(f"Config saved: {config_path}")
         return True
     except Exception as e:
-        logging.error(f"{log_error_configuration_file_saved} {e}")
+        logging.error(f"Error saving config: {e}")
         return False
 
 def setup_localization(lang_code):
@@ -138,7 +153,7 @@ def setup_localization(lang_code):
         _ = gettext.gettext
 
 def apply_language_from_config():
-    config = read_config()
+    config = load_config()
     
     if config.get("auto_language", True):
         system_lang = get_system_lang()
@@ -152,7 +167,7 @@ def apply_language_from_config():
     return config
 
 def language_setting(new_lang):
-    config = read_config()
+    config = load_config()
     config["language"] = new_lang
     config["auto_language"] = False
     if save_config(config):
@@ -401,7 +416,21 @@ def get_powercfg_list():
             return ""
     else:
         error_os()
-        return ""
+
+def powercfg_list_get(): # временый fix
+    try:
+        result = subprocess.run(
+            ["powercfg", "/list"],
+            capture_output=True,
+            text=True,
+            encoding="utf-8",
+            check=True
+        )
+        guids = re.findall(r'[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}', result.stdout, re.IGNORECASE)
+        return set(guids)
+    except subprocess.CalledProcessError as e:
+        logging.error(f"Не удалось получить список схем: {e}")
+        return set()
 
 def powercfg_geta_sh():
     if platform.system() == 'Windows':
@@ -417,17 +446,136 @@ def powercfg_geta_sh():
     else:
         error_os()
 
-def manual_check_update():
-    clear()
-    base_path = os.path.dirname(sys.executable)
-    exe_path = os.path.join(base_path, "check_update.exe")
-    if not os.path.exists(exe_path):
-        print(f"{Fore.RED}Error: {exe_path}") # {lang_error_file_not_found}
+def build_full_version(config):
+    version = config.get("version")
+    if not version:
+        print("Ошибка: в файле config.json отсутствует поле 'version'")
+        sys.exit(2)
+
+    build = config.get("build")
+    if build is not None:
+        try:
+            build_num = int(build)
+            return f"{version}+build.{build_num}"
+        except (ValueError, TypeError):
+            return version
+    return version
+
+def check_for_updates():
+    try:
+        clear()
+        config = load_config()
+        current_version_str = build_full_version(config)
+        allow_beta = config.get("allow_beta", False)
+        auto_download = config.get("auto_download_install", False)
+
+        url = f"{VERSION_URL}?t={int(time.time())}&r={random.random()}"
+        headers = {"Cache-Control": "no-cache", "Pragma": "no-cache"}
+        resp = requests.get(url, timeout=5, headers=headers)
+        resp.raise_for_status()
+        data = resp.json()
+
+        if not isinstance(data, dict):
+            clear()
+            print(f"Ошибка: сервер вернул не объект JSON, а {type(data).__name__}")
+            os.system("pause")
+            main_menu()
+
+        server_version_str = data.get("version")
+        if not server_version_str:
+            clear()
+            print("Ошибка: в JSON отсутствует поле 'version'")
+            os.system("pause")
+            main_menu()
+
+        print(f"🌐: {server_version_str}")
+        print(f"🖥️: {current_version_str}")
+
+        server_version = parse_version(server_version_str)
+        current_version = parse_version(current_version_str)
+
+        if not allow_beta and server_version.is_prerelease:
+            print("✅ Update beta: ❌ The beta version is not available (allow_beta = false).")
+            print("🌐🤜 🤛🖥️👍")
+            os.system("pause")
+            main_menu()
+
+        if server_version > current_version:
+            print(f"✅ Update: {server_version_str}")
+            download_url = data.get("download_url")
+            if download_url:
+                if auto_download:
+                    download_and_update(download_url)
+                else:
+                    print("\nDownload the update?")
+                    answer = input("Enter the choice: ").lower()
+                    if answer in ["y", "yes", "д", "да"]:
+                        download_and_update(download_url)
+                    else:
+                        main_menu()
+            else:
+                clear()
+                logging.error("ERROR: Error code: 1x1013")
+                print("ERROR: Error code: 1x1013")
+                sleep(2)
+                main_menu()
+        else:
+            print("✅ 🖥️ = 🌐👍")
+            sleep(2)
+            main_menu()
+
+    except Exception as e:
+        print(f"❌ ERROR: {e}")
         os.system("pause")
         main_menu()
-    else:
-        subprocess.Popen([exe_path], creationflags=subprocess.CREATE_NEW_CONSOLE)
-        sys.exit(0)
+
+def download_and_update(url: str):
+    sleep(2)
+    clear()
+    
+    try:
+        temp_dir = os.path.join(tempfile.gettempdir(), "PowerSetSetup_temp_update")
+        os.makedirs(temp_dir, exist_ok=True)
+
+        filename = url.split('/')[-1]
+        save_path = os.path.join(temp_dir, filename)
+
+        print(f"\nInstall in {save_path}...")
+        response = requests.get(url, stream=True)
+        response.raise_for_status()
+        total_size = int(response.headers.get('content-length', 0))
+        block_size = 8192
+        downloaded = 0
+        print()
+        with open(save_path, 'wb') as file:
+            for chunk in response.iter_content(chunk_size=block_size):
+                file.write(chunk)
+                downloaded += len(chunk)
+                if total_size > 0:
+                    percent = downloaded / total_size * 100
+                    print(f"\r💾: {percent:.1f}%", end='')
+        print("\n💾👍 = ✅")
+
+        script_dir = os.path.dirname(sys.argv[0])
+        update_exe = os.path.join(script_dir, "update.exe")
+        
+        sleep(2)
+        if os.path.isfile(update_exe):
+            print(f"\nStart {update_exe}...\n\n\n")
+            subprocess.Popen([update_exe, temp_dir])
+            sys.exit(0)
+        else:
+            clear()
+            print(f"ERROR: File {update_exe} not found. Please run the installer manually from the folder {temp_dir}.")
+            sleep(2)
+            main_menu()
+    except Exception as e:
+        clear()
+        logging.error(f"ERROR: Error code 0x0000: {e}")
+        print(f"ERROR: Error code 0x0000: {e}")
+        sleep(2)
+        main_menu()
+    sleep(2)
 
 # Main menu program
 def main_menu():
@@ -441,6 +589,7 @@ def main_menu():
         print(f"\n1. {lang_autoConfiguration}")
         print("2.", lang_advancedSettings)
         print("3.", lang_check_update_main)
+        # print("4.", "lang_diagnostics")
         print("4.", lang_supportdeveloper)
         print("5.", lang_settings_menu)
         print("6.", lang_back)
@@ -457,8 +606,12 @@ def main_menu():
             break
         elif main_menu == "3":
             logging.info(_("Manual update check via main menu")) # временно
-            manual_check_update()
+            check_for_updates()
             break
+        # elif main_menu == "4":
+            # logging.info("Diagnostics")
+            # diagnostics()
+           # break
         elif main_menu == "4":
             logging.info(_("Developer support via main menu")) # временно
             support_developer()
@@ -476,15 +629,40 @@ def main_menu():
             break
         elif main_menu in ["ru", "r", "ру", "р"]:
             language_setting('ru')
-            update_text_variables()
         elif main_menu == "en":
             language_setting('en')
-            update_text_variables()
         else:
             clear()
             logging.error(f"{log_error_input} (Main_menu)")
             print(f"{lang_error_input}")
             sleep(1)
+
+def diagnostics():
+    logging.info("Diagnostics the system")
+    clear()
+    if platform.system() == "Windows":
+        try:
+            result = subprocess.run(
+                ["sfc", "/scannow"],
+                capture_output=True, 
+                text=True,
+                encoding="utf-8",
+                check=False
+            )
+            if result.returncode == 0:
+                logging.info("sfc /scannow completed successfully")
+                print("sfc /scannow: OK")
+            else:
+                logging.error(f"sfc /scannow failed with code {result.returncode}: {result.stderr}")
+                print(f"sfc /scannow failed (code {result.returncode})")
+            clear()
+            print(lang_balanced_scheme_deleted)
+        except Exception as e:
+            clear()
+            logging.exception("Exception while running sfc /scannow")
+            print(f"Error running sfc: {e}")
+    else:
+        error_os()
 
 def cheack_os():
     logging.info('Checking the system')
@@ -506,8 +684,8 @@ def advancedSettings():
         print(f'3. {lang_add_scheme}')
         print(f'4. {lang_activate_scheme}')
         print(f'5. {lang_list_scheme}')
-        print(f'9. {lang_back_main_menu}')
-        print(f'0. {lang_exit}')
+        print(f'6. {lang_back_main_menu}')
+        print(f'7. {lang_exit}')
 
         advancedSettings = input(lang_choice)
         if advancedSettings == "1":
@@ -530,11 +708,11 @@ def advancedSettings():
             logging.info('Переход в функцию просмотра всех схем')
             list_scheme()
             break
-        elif advancedSettings in ["9", "back", "b"]:
+        elif advancedSettings in ["9", "6", "back", "b"]:
             logging.info('Переход в главное меню через расширенные настройки')
             main_menu()
             break
-        elif advancedSettings in ["0", "exit", "end", "e"]:
+        elif advancedSettings in ["0", "7", "exit", "end", "e"]:
             logging.info('Выход из приложения через расширенные настройки')
             end()
             break
@@ -555,9 +733,10 @@ def delete_scheme():
         print(f'3. {lang_max_performance}')
         print(f'4. {lang_powersave}')
         print(f'5. {lang_manual_input}')
-        print(f'0. {lang_exit}')
+        print(f"6. {lang_back_advancedsettings}")
+        print(f'7. {lang_exit}')
 
-        delete_scheme = input(lang_choice)
+        delete_scheme = input(lang_choice).lower()
         if delete_scheme == "1":
             logging.info(f'{log_select_delete_sh} "{lang_balanced}"')
             delete_balanced_scheme()
@@ -578,7 +757,11 @@ def delete_scheme():
             logging.info(f'{log_select_delete_sh} "{lang_manual_input}"')
             delete_manual_input_scheme()
             break
-        elif delete_scheme == "0":
+        elif delete_scheme in ["9", "6", "b", "back"]:
+            logging.info(f'{log_select_delete_sh} "{lang_back_advancedsettings}"')
+            advancedSettings()
+            break
+        elif delete_scheme in ["0", "7", "e", "exit", "end"]:
             logging.info(f'{log_select_delete_sh} "{lang_exit}"')
             end()
             break
@@ -646,7 +829,7 @@ def delete_max_performance_scheme():
     clear()
     print(".")
     cmd = [
-        "powercfg", "-delete", "a1234567-b000-c000-d000-e70707070707"
+        "powercfg", "-delete", "e9a42b02-d5df-448d-aa00-03f14749eb61"
     ]
 
     try:
@@ -777,21 +960,21 @@ def add_scheme():
         powercfg_list()
         print(f"\n{lang_addPowerPlanInfo}")
         print(f"1. {lang_max_performance}")
-        print(f"8. {lang_back_main_menu}")
-        print(f"9. {lang_back_advancedsettings}")
-        print(f"0. {lang_exit}")
+        print(f"2. {lang_back_advancedsettings}")
+        print(f"3. {lang_back_main_menu}")
+        print(f"4. {lang_exit}")
 
         add_scheme = input(lang_choice)
         if add_scheme == "1":
             add_scheme_max_perfomance()
             break
-        elif add_scheme in ["8", "main", "m"]:
-            main_menu()
-            break
-        elif add_scheme in ["9", "back", "b"]:
+        elif add_scheme in ["8", "4", "back", "b"]:
             advancedSettings()
             break
-        elif add_scheme in ["0", "exit", "end", "e"]:
+        elif add_scheme in ["9", "3", "main", "m"]:
+            main_menu()
+            break
+        elif add_scheme in ["0", "4", "exit", "end", "e"]:
             end()
             break
         else:
@@ -804,7 +987,7 @@ def add_scheme_max_perfomance():
     clear()
     print(".")
     cmd = [
-        "powercfg", "-duplicatescheme", "e9a42b02-d5df-448d-aa00-03f14749eb61", "a1234567-b000-c000-d000-e70707070707"
+        "powercfg", "-duplicatescheme", "e9a42b02-d5df-448d-aa00-03f14749eb61"
     ]
 
     try:
@@ -837,8 +1020,8 @@ def activate_scheme():
         print(f"3. {lang_max_performance}")
         print(f"4. {lang_powersave}")
         print(f"5. {lang_manual_input}")
-        print(f"9. {lang_back_main_menu}")
-        print(f"0. {lang_exit}")
+        print(f"6. {lang_back_main_menu}")
+        print(f"7. {lang_exit}")
 
         activate_scheme = input(lang_choice).lower()
         if activate_scheme == "1":
@@ -856,10 +1039,10 @@ def activate_scheme():
         elif activate_scheme == "5":
             activate_scheme_manual_input()
             break
-        elif activate_scheme in ["9", "back", "b"]:
+        elif activate_scheme in ["6", "9", "back", "b"]:
             main_menu()
             break
-        elif activate_scheme in ["0", "exit", "end", "e"]:
+        elif activate_scheme in ["7", "0", "exit", "end", "e"]:
             end()
             break
         else:
@@ -928,7 +1111,7 @@ def activate_scheme_max_perfomance():
     clear()
     print(".")
     cmd = [
-        "powercfg", "/setactive", "a1234567-b000-c000-d000-e70707070707"
+        "powercfg", "/setactive", "e9a42b02-d5df-448d-aa00-03f14749eb61"
     ]
 
     try:
@@ -987,7 +1170,7 @@ def activate_scheme_manual_input():
     if id_power_sh_send in ["back", "b", "", " "]:
         advancedSettings()
     elif id_power_sh_send in ["exit", "end", "e"]:
-        advancedSettings()
+        end()
     clear()
     print(".")
     cmd = [
@@ -1023,13 +1206,14 @@ def list_scheme():
     advancedSettings()
 
 def support_developer():
+    url = ""
     logging.debug("Переход в поддержку разработчика")
     if current_lang == "ru":
         url = "https://pay.cloudtips.ru/p/0cdee068"
-    elif current_lang == "en":
+    elif current_lang == "en": # ссылка ещё не создана + я не думаю что её будут использовать
         url = "https://badgen.net/badge/%D1%81%D1%81%D1%8B%D0%BB%D0%BA%D0%B0/%D0%B2%20%D1%80%D0%B0%D0%B7%D1%80%D0%B0%D0%B1%D0%BE%D1%82%D0%BA%D0%B5/red"
     else:
-        url = "для вас нет ссылки, потому что ваша система не поддерживается для этой функции!"
+        print("Error")
     open_url_support_developer(url)
 
 def open_url_support_developer(url):
@@ -1116,7 +1300,7 @@ def setting_menu_scheme_page2():
         # print("2.", lang_)
         # print("3.", lang_battery_report) # /BATTERYREPORT
         # print("4.", lang_settings_hibernate) # powercfg /systempowerreport
-        # print("5.", lang_send_othet) #  /A = Отчет о доступных в системе состояниях спящего режима.
+        # print("5.", lang_)
         # print("6.", lang_next)
 
 
@@ -1126,7 +1310,7 @@ def language_settings():
     logging.debug("Переход в меню настроек выбора языка")
     while True:
         clear()
-        config = read_config()
+        config = load_config()
         auto_language = config.get("auto_language", True)
         current_lang = config.get("language", "en")
         update_text_variables()
@@ -1152,7 +1336,7 @@ def language_settings():
             update_text_variables()
             logging.info(f"{log_language_changed} English")
         elif select_language in ["3", "auto", "a"]:
-            config = read_config()
+            config = load_config()
             config["auto_language"] = not config.get("auto_language", True)
             
             if config["auto_language"]:
@@ -1188,7 +1372,7 @@ def language_settings():
 def beta_settings():
     while True:
         clear()
-        config = read_config()
+        config = load_config()
         allow_beta = config.get("allow_beta", True)
         print(lang_beta_settings)
         if allow_beta:
@@ -1200,7 +1384,7 @@ def beta_settings():
     
         beta_settings = input(lang_choice).lower()
         if beta_settings == "1":
-            config = read_config()
+            config = load_config()
             config["allow_beta"] = not config.get("allow_beta", True)
             if save_config(config):
                 if config["allow_beta"]:
@@ -1269,30 +1453,50 @@ def automode1():
     logging.info("Переход в меню настройки максимальной производительности")
     clear()
     print(".")
-
-    scheme_before = get_powercfg_list()
-    commands = [
-        ["powercfg", "-restoredefaultschemes"],
-        ["powercfg", "-duplicatescheme", "e9a42b02-d5df-448d-aa00-03f14749eb61", "a1234567-b000-c000-d000-e70707070707"],
-        ["powercfg", "/setactive", "a1234567-b000-c000-d000-e70707070707"],
-        ["powercfg", "-delete", "a1841308-3541-4fab-bc81-f71556f20b4a"],
-        ["powercfg", "-delete", "381b4222-f694-41f0-9685-ff5bb260df2e"],
-        ["powercfg", "-delete", "8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c"]
-    ]
     
-    for cmd in commands:
+    scheme_before = get_powercfg_list()
+    target_guid = "e9a42b02-d5df-448d-aa00-03f14749eb61"
+
+    try:
+        subprocess.run(["powercfg", "-restoredefaultschemes"],
+                       shell=True, capture_output=True, text=True, encoding="utf-8", check=True)
+    except subprocess.CalledProcessError as e:
+        logging.error(f"Ошибка при восстановлении схем: {e}")
+        print(f"{Fore.RED}{lang_error_automode}")
+        return
+
+    current_guids = powercfg_list_get()
+
+    if target_guid not in current_guids:
         try:
-            clear()
-            print("..")
-            logging.debug(f"{log_progress} {' '.join(cmd)}")
-            subprocess.run(cmd,
-                        shell=True,
-                        capture_output=True, 
-                        text=True,
-                        encoding="utf-8",
-                        check=True)
+            subprocess.run(["powercfg", "-duplicatescheme", target_guid],
+                           capture_output=True, text=True, encoding="utf-8", check=True)
+            logging.debug(f"Дублирована схема {target_guid}")
         except subprocess.CalledProcessError as e:
-            logging.error(f"{log_error_automode} ({e}) [{cmd}]")
+            logging.error(f"Не удалось дублировать схему {target_guid}: {e}")
+            print(f"{Fore.RED}{lang_error_automode}")
+            return
+    
+    try:
+        subprocess.run(["powercfg", "/setactive", target_guid],
+                       capture_output=True, text=True, encoding="utf-8", check=True)
+        logging.debug(f"Активирована схема {target_guid}")
+    except subprocess.CalledProcessError as e:
+        logging.error(f"Не удалось активировать схему {target_guid}: {e}")
+        print(f"{Fore.RED}{lang_error_automode}")
+        return
+
+    all_guids = powercfg_list_get()
+
+    for guid in all_guids:
+        if guid.lower() == target_guid.lower():
+            continue
+        try:
+            logging.debug(f"{log_progress} {guid}")
+            subprocess.run(["powercfg", "-delete", guid],
+                           capture_output=True, text=True, encoding="utf-8", check=True)
+        except subprocess.CalledProcessError as e:
+            logging.error(f"{log_error_automode} {guid}: {e}")
             print(f"{Fore.RED}{lang_error_automode}")
     
     clear()
@@ -1330,28 +1534,50 @@ def automode2():
     print(".")
     
     scheme_before = get_powercfg_list()
-    commands = [
-        ["powercfg", "-restoredefaultschemes"],
-        ["powercfg", "/setactive", "381b4222-f694-41f0-9685-ff5bb260df2e"],
-        ["powercfg", "-delete", "a1841308-3541-4fab-bc81-f71556f20b4a"],
-        ["powercfg", "-delete", "8c5e7fda-e8bf-4a96-9a85-a6e23a8c635ca"]
-    ]
-    
-    for cmd in commands:
+    target_guid = "381b4222-f694-41f0-9685-ff5bb260df2e"
+
+    try:
+        subprocess.run(["powercfg", "-restoredefaultschemes"],
+                       shell=True, capture_output=True, text=True, encoding="utf-8", check=True)
+    except subprocess.CalledProcessError as e:
+        logging.error(f"Ошибка при восстановлении схем: {e}")
+        print(f"{Fore.RED}{lang_error_automode}")
+        return
+
+    current_guids = powercfg_list_get()
+
+    if target_guid not in current_guids:
         try:
-            clear()
-            print("..")
-            logging.debug(f"{log_progress} {' '.join(cmd)}")
-            subprocess.run(cmd,
-                        shell=True,
-                        capture_output=True, 
-                        text=True,
-                        encoding="utf-8",
-                        check=True)
+            subprocess.run(["powercfg", "-duplicatescheme", target_guid],
+                           capture_output=True, text=True, encoding="utf-8", check=True)
+            logging.debug(f"Дублирована схема {target_guid}")
         except subprocess.CalledProcessError as e:
-            logging.error(f"{log_error_automode} {cmd}: {e}")
-            clear()
+            logging.error(f"Не удалось дублировать схему {target_guid}: {e}")
             print(f"{Fore.RED}{lang_error_automode}")
+            return
+    
+    try:
+        subprocess.run(["powercfg", "/setactive", target_guid],
+                       capture_output=True, text=True, encoding="utf-8", check=True)
+        logging.debug(f"Активирована схема {target_guid}")
+    except subprocess.CalledProcessError as e:
+        logging.error(f"Не удалось активировать схему {target_guid}: {e}")
+        print(f"{Fore.RED}{lang_error_automode}")
+        return
+
+    all_guids = powercfg_list_get()
+
+    for guid in all_guids:
+        if guid.lower() == target_guid.lower():
+            continue
+        try:
+            logging.debug(f"{log_progress} {guid}")
+            subprocess.run(["powercfg", "-delete", guid],
+                           capture_output=True, text=True, encoding="utf-8", check=True)
+        except subprocess.CalledProcessError as e:
+            logging.error(f"{log_error_automode} {guid}: {e}")
+            print(f"{Fore.RED}{lang_error_automode}")
+     
     clear()
     print("...")
     clear()
@@ -1359,6 +1585,7 @@ def automode2():
     print(scheme_before)
     print(f"\n{lang_result_after}")
     powercfg_list()
+    os.system('pause')
     automode2_end_menu()
 
 def automode2_end_menu():
@@ -1386,26 +1613,48 @@ def automode3():
     print(".")
     
     scheme_before = get_powercfg_list()
-    commands = [
-        ["powercfg", "-restoredefaultschemes"],
-        ["powercfg", "/setactive", "a1841308-3541-4fab-bc81-f71556f20b4a"],
-        ["powercfg", "-delete", "381b4222-f694-41f0-9685-ff5bb260df2e"],
-        ["powercfg", "-delete", "8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c"]
-    ]
-    
-    for cmd in commands:
+    target_guid = "a1841308-3541-4fab-bc81-f71556f20b4a"
+
+    try:
+        subprocess.run(["powercfg", "-restoredefaultschemes"],
+                       shell=True, capture_output=True, text=True, encoding="utf-8", check=True)
+    except subprocess.CalledProcessError as e:
+        logging.error(f"Ошибка при восстановлении схем: {e}")
+        print(f"{Fore.RED}{lang_error_automode}")
+        return
+
+    current_guids = powercfg_list_get()
+
+    if target_guid not in current_guids:
         try:
-            clear()
-            print("..")
-            logging.debug(f"{log_progress} {' '.join(cmd)}")
-            subprocess.run(cmd,
-                        shell=True,
-                        capture_output=True, 
-                        text=True,
-                        encoding="utf-8",
-                        check=True)
+            subprocess.run(["powercfg", "-duplicatescheme", target_guid],
+                           capture_output=True, text=True, encoding="utf-8", check=True)
+            logging.debug(f"Дублирована схема {target_guid}")
         except subprocess.CalledProcessError as e:
-            logging.error(f"{log_error_automode} {cmd}: {e}")
+            logging.error(f"Не удалось дублировать схему {target_guid}: {e}")
+            print(f"{Fore.RED}{lang_error_automode}")
+            return
+    
+    try:
+        subprocess.run(["powercfg", "/setactive", target_guid],
+                       capture_output=True, text=True, encoding="utf-8", check=True)
+        logging.debug(f"Активирована схема {target_guid}")
+    except subprocess.CalledProcessError as e:
+        logging.error(f"Не удалось активировать схему {target_guid}: {e}")
+        print(f"{Fore.RED}{lang_error_automode}")
+        return
+
+    all_guids = powercfg_list_get()
+
+    for guid in all_guids:
+        if guid.lower() == target_guid.lower():
+            continue
+        try:
+            logging.debug(f"{log_progress} {guid}")
+            subprocess.run(["powercfg", "-delete", guid],
+                           capture_output=True, text=True, encoding="utf-8", check=True)
+        except subprocess.CalledProcessError as e:
+            logging.error(f"{log_error_automode} {guid}: {e}")
             print(f"{Fore.RED}{lang_error_automode}")
     
     clear()
@@ -1415,6 +1664,7 @@ def automode3():
     print(scheme_before)
     print(f"\n{lang_result_after}")
     powercfg_list()
+    os.system('pause')
     automode3_end_menu()
 
 def automode3_end_menu():
@@ -1428,7 +1678,7 @@ def automode3_end_menu():
         if autoend3 in ["1", "9", "back", "b"]:
             main_menu()
             break
-        elif autoend3 in ["2","0", "exit", "end", "e"]:
+        elif autoend3 in ["2", "0", "exit", "end", "e"]:
             end()
             break
         else:
