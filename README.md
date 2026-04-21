@@ -4,6 +4,15 @@
 ![License](https://img.shields.io/badge/License-Proprietary-blue?style=for-the-badge)
 ![Status](https://img.shields.io/badge/Status-Active-success?style=for-the-badge)
 
+## 🧭 Quick Navigation
+
+[![Releases](https://img.shields.io/badge/🚀%20Releases-Latest%20Version-blue?style=for-the-badge&logo=github)](https://github.com/BrocatScript/PowerSetSetup/releases)
+[![Issues](https://img.shields.io/badge/🐞%20Issues-Report%20Bug-red?style=for-the-badge&logo=github)](https://github.com/BrocatScript/PowerSetSetup/issues)
+[![Pull Requests](https://img.shields.io/badge/🔀%20PRs-Contribute-green?style=for-the-badge&logo=github)](https://github.com/BrocatScript/PowerSetSetup/pulls)
+[![Actions](https://img.shields.io/badge/⚙️%20Actions-Build%20Status-yellow?style=for-the-badge&logo=githubactions)](https://github.com/BrocatScript/PowerSetSetup/actions)
+[![Source](https://img.shields.io/badge/📁%20Source-Code-black?style=for-the-badge&logo=github)](https://github.com/BrocatScript/PowerSetSetup)
+[![Download](https://img.shields.io/badge/⬇️%20Download-Installer-brightgreen?style=for-the-badge&logo=windows)](https://github.com/BrocatScript/PowerSetSetup/releases/latest)
+
 ## 📖 Description
 
 **PowerSetSetup** is a powerful Windows utility designed to manage power settings on **Windows 10 and Windows 11** operating systems. With an intuitive interface, you can easily perform various operations with power schemes including:
