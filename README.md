@@ -9,7 +9,7 @@
 [![Releases](https://img.shields.io/badge/🚀%20Releases-Latest%20Version-blue?style=for-the-badge&logo=github)](https://github.com/BrocatScript/PowerSetSetup/releases)
 [![Issues](https://img.shields.io/badge/🐞%20Issues-Report%20Bug-red?style=for-the-badge&logo=github)](https://github.com/BrocatScript/PowerSetSetup/issues)
 [![Pull Requests](https://img.shields.io/badge/🔀%20PRs-Contribute-green?style=for-the-badge&logo=github)](https://github.com/BrocatScript/PowerSetSetup/pulls)
-[![Actions](https://img.shields.io/badge/⚙️%20Actions-Build%20Status-yellow?style=for-the-badge&logo=githubactions)](https://github.com/BrocatScript/PowerSetSetup/actions)
+[![Wiki](https://img.shields.io/badge/📚%20Wiki-Documentation-lightgrey?style=for-the-badge&logo=readthedocs)](https://github.com/BrocatScript/PowerSetSetup/wiki)
 [![Source](https://img.shields.io/badge/📁%20Source-Code-black?style=for-the-badge&logo=github)](https://github.com/BrocatScript/PowerSetSetup)
 [![Download](https://img.shields.io/badge/⬇️%20Download-Installer-brightgreen?style=for-the-badge&logo=windows)](https://github.com/BrocatScript/PowerSetSetup/releases/latest)
 
