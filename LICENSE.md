@@ -30,17 +30,7 @@
 * Removal or alteration of copyright notices
 * Presenting the program as your own development
 
----
-
-## 💝 SUPPORT THE AUTHOR
-
-If the program was helpful to you, you can support the author:
-
-[![Support the Author](https://img.shields.io/badge/Support-Author-FF6B6B)](https://pay.cloudtips.ru/p/0cdee068)
-
-**Email:** [brocatscript@yandex.com](mailto:brocatscript@yandex.com)
-
----
+---
 
 ## ⚠️ DISCLAIMER
 
