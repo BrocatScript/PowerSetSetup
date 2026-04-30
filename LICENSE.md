@@ -1,7 +1,7 @@
 # PowerSetSetup License Agreement
 
 ![License](https://img.shields.io/badge/License-Proprietary-blue?style=for-the-badge)
-![Program](https://img.shields.io/badge/PowerSetSetup-1.0.1-1.0.2%20-blue?style=for-the-badge)
+![Program](https://img.shields.io/badge/PowerSetSetup-1.0.2%20-blue?style=for-the-badge)
 
 ## 📄 Basic Provisions
 
