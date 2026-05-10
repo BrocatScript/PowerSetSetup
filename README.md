@@ -78,7 +78,7 @@
 4. **📧** Contact support if issues persist
 
 ### 📬 Contact the Author:
-**Email:** [brocatscript@yandex.com](mailto:brocatscript@yandex.com)
+**Email:** [brocatscript.support@gmail.com](mailto:brocatscript.support@gmail.com)
 
 ---
 
@@ -94,7 +94,7 @@ If you find this tool useful, consider supporting the development:
 
 For questions, suggestions, or collaboration:
 
-**Email:** [brocatscript@yandex.com](mailto:brocatscript@yandex.com)
+**Email:** [brocatscript.support@gmail.com](mailto:brocatscript.support@gmail.com)
 
 ---
 
