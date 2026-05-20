@@ -1,0 +1,12 @@
+<RCC>
+  <qresource prefix="Icons_svg">
+    <file>data/icons/about.svg</file>
+    <file>data/icons/PowerSetSetup.svg</file>
+    <file>data/icons/arrow_down.svg</file>
+    <file>data/icons/balanced.svg</file>
+    <file>data/icons/main.svg</file>
+    <file>data/icons/performance.svg</file>
+    <file>data/icons/powersave.svg</file>
+    <file>data/icons/settings.svg</file>
+  </qresource>
+</RCC>
