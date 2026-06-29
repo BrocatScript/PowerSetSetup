@@ -33,4 +33,10 @@ jobs:
         git config --global user.name "github-actions[bot]"
         git config --global user.email "github-actions[bot]@users.noreply.github.com"
         git add stats/stats_database.json stats/stats_history.txt stats/*.png 2>/dev/null || true
-        git diff-index --quiet HEAD || (git commit -m "Auto-update stats" && git push)
+        
+        # Если изменения есть, комитим, подтягиваем твои новые коммиты сверху и пушим
+        if ! git diff-index --quiet HEAD; then
+          git commit -m "Auto-update stats"
+          git pull --rebase origin main
+          git push
+        fi
