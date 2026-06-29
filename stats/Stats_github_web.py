@@ -135,18 +135,50 @@ def get_delta_numeric(history, current_total, days_ago):
     ref_date = past_dates[-1]
     return current_total - history[ref_date]["total"]
 
-def save_single_dashboard(style_name, file_path, is_dark, history, current_assets, current_total, today_formatted):
-    """Внутренний метод генерации структуры графиков под конкретную тему оформления."""
+def save_single_dashboard(style_name, file_path, is_dark, lang, history, current_assets, current_total, today_formatted):
+    """Внутренний метод генерации структуры графиков под конкретную тему и язык."""
+    # Словарик с переводами
+    t = {
+        "ru": {
+            "title": f"Аналитический дашборд PowerSetSetup ({today_formatted})",
+            "downloads": "Установки",
+            "g1_title": "Динамика новых скачиваний по дням",
+            "g1_x": "Дни (Дата)",
+            "g1_y": "Прирост установок",
+            "periods": ['Неделя', 'Месяц', 'Год', 'Всё время'],
+            "g2_title": "Сравнение показателей за периоды",
+            "g2_y": "Число скачиваний",
+            "g3_title": "Доли популярности файлов от общего объема скачиваний",
+            "g3_leg_title": "Файлы (Полные имена):",
+            "g3_pcs": "шт.",
+            "g3_other": "Другие файлы",
+            "no_data": "Нет данных"
+        },
+        "en": {
+            "title": f"PowerSetSetup Analytical Dashboard ({today_formatted})",
+            "downloads": "Downloads",
+            "g1_title": "Daily Download Dynamics",
+            "g1_x": "Days (Date)",
+            "g1_y": "Downloads Growth",
+            "periods": ['Week', 'Month', 'Year', 'Total'],
+            "g2_title": "Period Comparison",
+            "g2_y": "Number of Downloads",
+            "g3_title": "File Popularity Share of Total Downloads",
+            "g3_leg_title": "Files (Full names):",
+            "g3_pcs": "pcs",
+            "g3_other": "Other files",
+            "no_data": "No data"
+        }
+    }[lang]
+
     with plt.style.context(style_name):
         fig = plt.figure(figsize=(16, 12), facecolor='#121212' if is_dark else '#ffffff')
-        fig.suptitle(f"Аналитический дашборд PowerSetSetup ({today_formatted})", 
-                     fontsize=18, fontweight='bold', y=0.96, color='#ffffff' if is_dark else '#000000')
+        fig.suptitle(t["title"], fontsize=18, fontweight='bold', y=0.96, color='#ffffff' if is_dark else '#000000')
 
         # --- ГРАФИК 1: Линейная динамика ---
         ax1 = plt.subplot(2, 2, 1, facecolor='#1e1e1e' if is_dark else '#fbfbfb')
         all_keys = sorted(history.keys())
         
-        # Ограничение до 15 промежутков: самый первый остается всегда, старые в центре скрываются
         if len(all_keys) <= 15:
             chart_dates = all_keys
         else:
@@ -162,33 +194,24 @@ def save_single_dashboard(style_name, file_path, is_dark, history, current_asset
             else:
                 growth_values.append(history[d_str]["total"] - history[d_str].get("initial_total", history[d_str]["total"]))
         
-        # ЖЕСТКАЯ ФИКСАЦИЯ ЦЕЛЫХ ЧИСЕЛ (убирает любые точки, сотые и тысячные)
         ax1.yaxis.set_major_locator(matplotlib.ticker.MaxNLocator(integer=True))
         ax1.yaxis.set_major_formatter(matplotlib.ticker.FormatStrFormatter('%d'))
         
-        # Управление границами оси Y, чтобы точки левитировали и не резались рамкой
         max_g = max(growth_values) if growth_values else 5
         min_g = min(growth_values) if growth_values else 0
-        
-        if max_g == min_g:
-            # Если всё плоско (например, везде нули), поднимаем линию на 0.5 вверх
-            ax1.set_ylim(min_g - 0.015, max_g + 4.5) 
-        else:
-            # Даем полушаг вниз и запас вверх, чтобы маркеры точек плавали в воздухе
-            ax1.set_ylim(min_g - 0.015, max_g + 1.5)
+        ax1.set_ylim(min_g - 0.015, max_g + (4.5 if max_g == min_g else 1.5))
             
         line_color = '#00adb5' if is_dark else '#1f77b4'
-        ax1.plot(dates_labels, growth_values, marker='o', linewidth=2.5, color=line_color, label='Установки')
+        ax1.plot(dates_labels, growth_values, marker='o', linewidth=2.5, color=line_color, label=t["downloads"])
         ax1.fill_between(dates_labels, growth_values, color=line_color, alpha=0.15)
-        ax1.set_title("Динамика новых скачиваний по дням", fontsize=12, fontweight='bold', color='#ffffff' if is_dark else '#000000', pad=10)
-        ax1.set_xlabel("Дни (Дата)", color='#aaaaaa' if is_dark else '#555555')
-        ax1.set_ylabel("Прирост установок", color='#aaaaaa' if is_dark else '#555555')
+        ax1.set_title(t["g1_title"], fontsize=12, fontweight='bold', color='#ffffff' if is_dark else '#000000', pad=10)
+        ax1.set_xlabel(t["g1_x"], color='#aaaaaa' if is_dark else '#555555')
+        ax1.set_ylabel(t["g1_y"], color='#aaaaaa' if is_dark else '#555555')
         ax1.grid(True, linestyle='--', alpha=0.2 if is_dark else 0.5, color='#ffffff' if is_dark else '#cccccc')
         ax1.tick_params(colors='#ffffff' if is_dark else '#000000')
 
-        # --- ГРАФИК 2: Сравнение периодов ("Башенки") ---
+        # --- ГРАФИК 2: Сравнение периодов ---
         ax2 = plt.subplot(2, 2, 2, facecolor='#1e1e1e' if is_dark else '#fbfbfb')
-        periods = ['Неделя', 'Месяц', 'Год', 'Всё время']
         p_values = [
             get_delta_numeric(history, current_total, 7),
             get_delta_numeric(history, current_total, 30),
@@ -197,35 +220,30 @@ def save_single_dashboard(style_name, file_path, is_dark, history, current_asset
         ]
         
         bar_colors = ['#00e676', '#9b5de5', '#ff9f43', '#ff2e63'] if is_dark else ['#2ca02c', '#9467bd', '#ff7f0e', '#d62728']
-        bars = ax2.bar(periods, p_values, color=bar_colors, width=0.5)
-        ax2.set_title("Сравнение показателей за периоды", fontsize=12, fontweight='bold', color='#ffffff' if is_dark else '#000000', pad=10)
-        ax2.set_ylabel("Число скачиваний", color='#aaaaaa' if is_dark else '#555555')
+        bars = ax2.bar(t["periods"], p_values, color=bar_colors, width=0.5)
+        ax2.set_title(t["g2_title"], fontsize=12, fontweight='bold', color='#ffffff' if is_dark else '#000000', pad=10)
+        ax2.set_ylabel(t["g2_y"], color='#aaaaaa' if is_dark else '#555555')
         ax2.grid(axis='y', linestyle='--', alpha=0.2 if is_dark else 0.5, color='#ffffff' if is_dark else '#cccccc')
         ax2.tick_params(colors='#ffffff' if is_dark else '#000000')
 
-        # АВТОМАТИЧЕСКИЙ ЛИМИТ ОСИ Y (добавляет 20% запаса сверху, чтобы столбики и текст красиво помещались)
         max_val = max(p_values) if p_values else 10
         ax2.set_ylim(0, max_val * 1.2 if max_val > 0 else 10)
         
         for i, bar in enumerate(bars):
             height = bar.get_height()
-            # Для "Всё время" плюс не ставим, для остальных — только при изменении > 0
-            if periods[i] == 'Всё время':
+            if t["periods"][i] in ['Всё время', 'Total']:
                 label_text = f'{height}'
             else:
                 label_text = f'+{height}' if height > 0 else f'{height}'
                 
-            ax2.annotate(label_text,
-                        xy=(bar.get_x() + bar.get_width() / 2, height),
-                        xytext=(0, 4),  
-                        textcoords="offset points",
+            ax2.annotate(label_text, xy=(bar.get_x() + bar.get_width() / 2, height),
+                        xytext=(0, 4), textcoords="offset points",
                         ha='center', va='bottom', fontweight='bold', color='#ffffff' if is_dark else '#000000')
 
-        # --- ГРАФИК 3: Круговая диаграмма долей популярных файлов ---
+        # --- ГРАФИК 3: Круговая диаграмма ---
         ax3 = plt.subplot(2, 1, 2, facecolor='#121212' if is_dark else '#ffffff')
         sorted_files = sorted(current_assets.items(), key=lambda x: x[1], reverse=True)
         
-        # Получаем данные за прошлый запуск для вычисления сегодняшнего изменения (+число)
         all_dates = sorted(history.keys())
         prev_assets = {}
         if len(all_dates) > 1:
@@ -247,7 +265,7 @@ def save_single_dashboard(style_name, file_path, is_dark, history, current_asset
             
             if idx < 5:
                 pie_values.append(count)
-                legend_labels.append(f"{name} ({count} шт.){change_str}")
+                legend_labels.append(f"{name} ({count} {t['g3_pcs']}){change_str}")
             else:
                 other_sum += count
                 other_change_sum += asset_change
@@ -255,66 +273,46 @@ def save_single_dashboard(style_name, file_path, is_dark, history, current_asset
         if other_sum > 0:
             pie_values.append(other_sum)
             other_change_str = f" +{other_change_sum}" if other_change_sum > 0 else ""
-            legend_labels.append(f"Другие файлы ({other_sum} шт.){other_change_str}")
+            legend_labels.append(f"{t['g3_other']} ({other_sum} {t['g3_pcs']}){other_change_str}")
             
         if sum(pie_values) > 0:
             pie_colors = ['#00adb5', '#ff2e63', '#00e676', '#f8b500', '#9b5de5', '#ff9f43'] if is_dark else ['#5dade2', '#e74c3c', '#2ecc71', '#f1c40f', '#9b5de5', '#e67e22']
             
             wedges, texts, autotexts = ax3.pie(
-                pie_values, 
-                labels=None, 
-                autopct='%1.1f%%', 
-                startangle=140, 
-                colors=pie_colors[:len(pie_values)],
-                pctdistance=0.7,
+                pie_values, labels=None, autopct='%1.1f%%', startangle=140, 
+                colors=pie_colors[:len(pie_values)], pctdistance=0.7,
                 textprops={'color': '#ffffff' if is_dark else '#000000', 'fontsize': 11, 'weight': 'bold'}
             )
             
-            leg = ax3.legend(
-                wedges, 
-                legend_labels, 
-                title="Файлы (Полные имена):", 
-                loc="center left", 
-                bbox_to_anchor=(1.0, 0.5), 
-                facecolor='#1e1e1e' if is_dark else '#f5f5f5', 
-                edgecolor='#333333' if is_dark else '#cccccc',
-                fontsize=10
-            )
+            leg = ax3.legend(wedges, legend_labels, title=t["g3_leg_title"], loc="center left", bbox_to_anchor=(1.0, 0.5), 
+                             facecolor='#1e1e1e' if is_dark else '#f5f5f5', edgecolor='#333333' if is_dark else '#cccccc', fontsize=10)
             plt.setp(leg.get_texts(), color='#ffffff' if is_dark else '#000000')
             plt.setp(leg.get_title(), color='#ffffff' if is_dark else '#000000')
             
-            ax3.set_title("Доли популярности файлов от общего объема скачиваний", fontsize=12, fontweight='bold', color='#ffffff' if is_dark else '#000000', pad=15)
+            ax3.set_title(t["g3_title"], fontsize=12, fontweight='bold', color='#ffffff' if is_dark else '#000000', pad=15)
         else:
-            ax3.text(0.5, 0.5, "Нет данных", ha='center', va='center', color='#ffffff' if is_dark else '#000000')
+            ax3.text(0.5, 0.5, t["no_data"], ha='center', va='center', color='#ffffff' if is_dark else '#000000')
             ax3.axis('off')
 
         plt.tight_layout(rect=[0, 0.02, 0.98, 0.93])
-        # hspace — расстояние по вертикали, wspace — по горизонтали между 1 и 2 графиком
         fig.subplots_adjust(hspace=0.45, wspace=0.35) 
-        
-        plt.savefig(file_path, dpi=150, bbox_inches='tight', facecolor=fig.get_facecolor(), edgecolor='none')
-        
         plt.savefig(file_path, dpi=150, bbox_inches='tight', facecolor=fig.get_facecolor(), edgecolor='none')
         plt.close()
 
 def generate_visual_dashboards(history, current_assets, current_total):
-    """Генерирует две независимые картинки с постоянными именами, перезаписывая старые."""
+    """Генерирует 4 независимые картинки: (RU/EN) x (Dark/Light)."""
     try:
         today_formatted = datetime.date.today().strftime("%d.%m.%Y")
         
-        # Жестко фиксируем имена БЕЗ даты
-        img_dark_path = os.path.join(SCRIPT_DIR, "stats_dashboard_dark.png")
-        img_light_path = os.path.join(SCRIPT_DIR, "stats_dashboard_light.png")
+        # Генерируем русскую версию
+        save_single_dashboard('dark_background', os.path.join(SCRIPT_DIR, "stats_dashboard_ru_dark.png"), True, "ru", history, current_assets, current_total, today_formatted)
+        save_single_dashboard('default', os.path.join(SCRIPT_DIR, "stats_dashboard_ru_light.png"), False, "ru", history, current_assets, current_total, today_formatted)
         
-        # 1. Генерируем Тёмный Дашборд
-        save_single_dashboard('dark_background', img_dark_path, True, history, current_assets, current_total, today_formatted)
+        # Генерируем английскую версию
+        save_single_dashboard('dark_background', os.path.join(SCRIPT_DIR, "stats_dashboard_en_dark.png"), True, "en", history, current_assets, current_total, today_formatted)
+        save_single_dashboard('default', os.path.join(SCRIPT_DIR, "stats_dashboard_en_light.png"), False, "en", history, current_assets, current_total, today_formatted)
         
-        # 2. Генерируем Светлый Дашборд
-        save_single_dashboard('default', img_light_path, False, history, current_assets, current_total, today_formatted)
-        
-        log_message("Графика успешно обновлена и перезаписана:")
-        log_message(f" -> Тёмная тема: {os.path.basename(img_dark_path)}")
-        log_message(f" -> Светлая тема: {os.path.basename(img_light_path)}")
+        log_message("Все 4 дашборда (RU/EN, Dark/Light) успешно обновлены.")
                         
     except Exception as e:
         log_message(f"КРИТИЧЕСКАЯ ОШИБКА генерации графиков: {e}")
