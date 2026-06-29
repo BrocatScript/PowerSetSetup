@@ -14,11 +14,9 @@
 [![Download](https://img.shields.io/badge/⬇️%20Download-Installer-brightgreen?style=for-the-badge&logo=windows)](https://github.com/BrocatScript/PowerSetSetup/releases/latest)
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="stats/stats_dashboard_dark.png">
-  
-  <source media="(prefers-color-scheme: light)" srcset="stats/stats_dashboard_light.png">
-  
-  <img alt="PowerSetSetup Stats Dashboard" src="stats/stats_dashboard_dark.png">
+  <source media="(prefers-color-scheme: dark)" srcset="stats/stats_dashboard_en_dark.png">
+  <source media="(prefers-color-scheme: light)" srcset="stats/stats_dashboard_en_light.png">
+  <img alt="PowerSetSetup Stats" src="stats/stats_dashboard_en_dark.png">
 </picture>
 
 ## 📖 Description
