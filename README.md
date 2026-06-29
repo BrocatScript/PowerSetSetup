@@ -65,7 +65,7 @@ Updated every hour...
 
 ## 📜 License
 
-**Full license:** [PolyForm Noncommercial License](https://github.com/BrocatScript/PowerSetSetup/blob/main/LICENSE.md)
+**Full license:** [PolyForm Noncommercial License](https://github.com/BrocatScript/PowerSetSetup/blob/main/docs/LICENSE.md)
 
 ---
 
@@ -170,7 +170,7 @@ For questions, suggestions, or collaboration:
 
 ## 📜 Лицензия
 
-**Полный вариант лицензии:** [PolyForm Noncommercial License](https://github.com/BrocatScript/PowerSetSetup/blob/main/LICENSE.md)
+**Полный вариант лицензии:** [PolyForm Noncommercial License](https://github.com/BrocatScript/PowerSetSetup/blob/main/docs/LICENSE.md)
 
 ---
 
