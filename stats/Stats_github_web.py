@@ -298,12 +298,13 @@ def save_single_dashboard(style_name, file_path, is_dark, history, current_asset
         plt.close()
 
 def generate_visual_dashboards(history, current_assets, current_total):
-    """Генерирует две независимые картинки: тёмную и светлую с привязкой к дате и лимитом в 5 файлов."""
+    """Генерирует две независимые картинки с постоянными именами, перезаписывая старые."""
     try:
         today_formatted = datetime.date.today().strftime("%d.%m.%Y")
         
-        img_dark_path = os.path.join(SCRIPT_DIR, f"stats_dashboard_{today_formatted}_dark.png")
-        img_light_path = os.path.join(SCRIPT_DIR, f"stats_dashboard_{today_formatted}_light.png")
+        # Жестко фиксируем имена БЕЗ даты
+        img_dark_path = os.path.join(SCRIPT_DIR, "stats_dashboard_dark.png")
+        img_light_path = os.path.join(SCRIPT_DIR, "stats_dashboard_light.png")
         
         # 1. Генерируем Тёмный Дашборд
         save_single_dashboard('dark_background', img_dark_path, True, history, current_assets, current_total, today_formatted)
@@ -311,22 +312,10 @@ def generate_visual_dashboards(history, current_assets, current_total):
         # 2. Генерируем Светлый Дашборд
         save_single_dashboard('default', img_light_path, False, history, current_assets, current_total, today_formatted)
         
-        log_message(f"Графика успешно обновлена за сегодня ({today_formatted}):")
+        log_message("Графика успешно обновлена и перезаписана:")
         log_message(f" -> Тёмная тема: {os.path.basename(img_dark_path)}")
         log_message(f" -> Светлая тема: {os.path.basename(img_light_path)}")
-        
-        # Очистка старых файлов — держим лимит строго 5 картинок каждого типа
-        for suffix in ['_dark.png', '_light.png']:
-            files = glob.glob(os.path.join(SCRIPT_DIR, f"stats_dashboard_*{suffix}"))
-            files.sort(key=os.path.getmtime)  # Сортировка по времени создания (старые в начале)
-            while len(files) > 5:
-                old_file = files.pop(0)
-                try:
-                    os.remove(old_file)
-                    log_message(f"Удален старый дашборд (лимит 5): {os.path.basename(old_file)}")
-                except Exception as e:
-                    log_message(f"Не удалось удалить старый файл {os.path.basename(old_file)}: {e}")
-                    
+                        
     except Exception as e:
         log_message(f"КРИТИЧЕСКАЯ ОШИБКА генерации графиков: {e}")
 
