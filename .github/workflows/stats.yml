@@ -1,1 +1,6 @@
-.github/workflows/stats.yml
+- name: Run Stats Script
+      run: |
+        echo "=== ПРОВЕРКА СТРУКТУРЫ ПАПОК ==="
+        ls -R
+        echo "=== ЗАПУСК СКРИПТА ==="
+        python stats/Stats.py
