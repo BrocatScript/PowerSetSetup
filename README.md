@@ -13,6 +13,14 @@
 [![Source](https://img.shields.io/badge/📁%20Source-Code-black?style=for-the-badge&logo=github)](https://github.com/BrocatScript/PowerSetSetup)
 [![Download](https://img.shields.io/badge/⬇️%20Download-Installer-brightgreen?style=for-the-badge&logo=windows)](https://github.com/BrocatScript/PowerSetSetup/releases/latest)
 
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="stats/stats_dashboard_dark.png">
+  
+  <source media="(prefers-color-scheme: light)" srcset="stats/stats_dashboard_light.png">
+  
+  <img alt="PowerSetSetup Stats Dashboard" src="stats/stats_dashboard_dark.png">
+</picture>
+
 ## 📖 Description
 
 **PowerSetSetup** is a powerful Windows utility designed to manage power settings on **Windows 10 and Windows 11** operating systems. With an intuitive interface, you can easily perform various operations with power schemes including:
