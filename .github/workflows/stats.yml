@@ -1,6 +1,40 @@
-- name: Run Stats Script
+name: Auto Update Stats Dashboard
+
+on:
+  schedule:
+    - cron: '0 */2 * * *'
+  workflow_dispatch:
+
+jobs:
+  run-stats-script:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+
+    - name: Install dependencies
       run: |
-        echo "=== ПРОВЕРКА СТРУКТУРЫ ПАПОК ==="
+        python -m pip install --upgrade pip
+        pip install requests matplotlib
+
+    - name: Run Stats Script
+      run: |
+        echo "=== ПРОВЕРКА СТРУКТУРЫ ==="
         ls -R
-        echo "=== ЗАПУСК СКРИПТА ==="
-        python stats/Stats.py
+        echo "=== ЗАПУСК ==="
+        python stats/Stats.py || python Stats.py
+
+    - name: Commit and Push changes
+      run: |
+        git config --global user.name "github-actions[bot]"
+        git config --global user.email "github-actions[bot]@users.noreply.github.com"
+        git add stats/stats_database.json stats/stats_history.txt stats/*.png stats_database.json stats_history.txt *.png 2>/dev/null || true
+        git diff-index --quiet HEAD || (git commit -m "Auto-update" && git push)
