@@ -18,7 +18,7 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v5
       with:
-        python-version: '3.11'
+        python-version: '3.14.6'
 
     - name: Install dependencies
       run: |
@@ -26,15 +26,11 @@ jobs:
         pip install requests matplotlib
 
     - name: Run Stats Script
-      run: |
-        echo "=== ПРОВЕРКА СТРУКТУРЫ ==="
-        ls -R
-        echo "=== ЗАПУСК ==="
-        python stats/Stats.py || python Stats.py
+      run: python stats/Stats_github_web.py
 
     - name: Commit and Push changes
       run: |
         git config --global user.name "github-actions[bot]"
         git config --global user.email "github-actions[bot]@users.noreply.github.com"
-        git add stats/stats_database.json stats/stats_history.txt stats/*.png stats_database.json stats_history.txt *.png 2>/dev/null || true
-        git diff-index --quiet HEAD || (git commit -m "Auto-update" && git push)
+        git add stats/stats_database.json stats/stats_history.txt stats/*.png 2>/dev/null || true
+        git diff-index --quiet HEAD || (git commit -m "Auto-update stats" && git push)
