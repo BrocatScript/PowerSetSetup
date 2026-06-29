@@ -1,10 +1,10 @@
 # PowerSetSetup ⚡
 
-[Language: English](#english) | [Language: Русский](#русский)
-
 ---
 
 ## English
+
+[![English](https://img.shields.io/badge/Language-English-blue?style=flat-square)](#english) [![Русский](https://img.shields.io/badge/Язык-Русский-red?style=flat-square)](#русский)
 
 ![Windows 10/11](https://img.shields.io/badge/Windows-10%2F11-0078D6?style=for-the-badge&logo=windows)
 ![License](https://img.shields.io/badge/License-PolyForm%20Noncommercial-blue?style=for-the-badge)
@@ -107,9 +107,10 @@ For questions, suggestions, or collaboration:
 
 ---
 
-[Language: English](#english) | [Language: Русский](#русский)
 
 ## Русский
+
+[![English](https://img.shields.io/badge/Language-English-blue?style=flat-square)](#english) [![Русский](https://img.shields.io/badge/Язык-Русский-red?style=flat-square)](#русский)
 
 ![Windows 10/11](https://img.shields.io/badge/Windows-10%2F11-0078D6?style=for-the-badge&logo=windows)
 ![Лицензия](https://img.shields.io/badge/Лицензия-PolyForm%20Noncommercial-blue?style=for-the-badge)
