@@ -1,7 +1,5 @@
 # PowerSetSetup ⚡
 
----
-
 ## English
 
 [![English](https://img.shields.io/badge/Language-English-blue?style=flat-square)](#english) [![Русский](https://img.shields.io/badge/Язык-Русский-red?style=flat-square)](#русский)
