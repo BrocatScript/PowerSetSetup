@@ -137,7 +137,6 @@ def get_delta_numeric(history, current_total, days_ago):
 
 def save_single_dashboard(style_name, file_path, is_dark, lang, history, current_assets, current_total, today_formatted):
     """Внутренний метод генерации структуры графиков под конкретную тему и язык."""
-    # Словарик с переводами
     t = {
         "ru": {
             "title": f"Аналитический дашборд PowerSetSetup ({today_formatted})",
@@ -177,11 +176,11 @@ def save_single_dashboard(style_name, file_path, is_dark, lang, history, current
         fig = plt.figure(figsize=(16, 12), facecolor='#121212' if is_dark else '#ffffff')
         fig.suptitle(t["title"], fontsize=18, fontweight='bold', y=0.96, color='#ffffff' if is_dark else '#000000')
 
-        # --- ГРАФИК 1: Линейная динамика (Ограничено последними 10 днями) ---
+        # --- ГРАФИК 1: Линейная динамика (СТРОГО ПОСЛЕДНИЕ 10 ДНЕЙ) ---
         ax1 = plt.subplot(2, 2, 1, facecolor='#1e1e1e' if is_dark else '#fbfbfb')
         all_keys = sorted(history.keys())
         
-        # Берем строго последние 10 дней
+        # Берем только последние 10 записей без склеек
         chart_dates = all_keys[-10:] if len(all_keys) >= 10 else all_keys
             
         dates_labels = [datetime.date.fromisoformat(d).strftime("%d.%m") for d in chart_dates]
@@ -240,26 +239,19 @@ def save_single_dashboard(style_name, file_path, is_dark, lang, history, current
                         xytext=(0, 4), textcoords="offset points",
                         ha='center', va='bottom', fontweight='bold', color='#ffffff' if is_dark else '#000000')
 
-        # --- ГРАФИК 3: Круговая диаграмма (С еженедельным счетчиком скачиваний) ---
+        # --- ГРАФИК 3: Круговая диаграмма (Считаем изменения ровно за 7 дней) ---
         ax3 = plt.subplot(2, 1, 2, facecolor='#121212' if is_dark else '#ffffff')
         sorted_files = sorted(current_assets.items(), key=lambda x: x[1], reverse=True)
         
-        # Находим данные ровно 7 дней назад
+        # Находим точку ровно 7 дней назад
         today_dt = datetime.date.today()
         target_date_7d = (today_dt - datetime.timedelta(days=7)).isoformat()
         past_dates_7d = sorted([d for d in history.keys() if d <= target_date_7d])
         
         if past_dates_7d:
-            ref_date_7d = past_dates_7d[-1]
-            prev_assets = history[ref_date_7d].get("assets", {})
+            prev_assets = history[past_dates_7d[-1]].get("assets", {})
         else:
-            # Если истории меньше недели, берем самую первую точку
-            all_dates = sorted(history.keys())
-            if all_dates:
-                first_date = all_dates[0]
-                prev_assets = history[first_date].get("initial_assets", history[first_date].get("assets", {}))
-            else:
-                prev_assets = {}
+            prev_assets = history[all_keys[0]].get("initial_assets", history[all_keys[0]].get("assets", {})) if all_keys else {}
 
         pie_values = []
         legend_labels = []
@@ -312,11 +304,9 @@ def generate_visual_dashboards(history, current_assets, current_total):
     try:
         today_formatted = datetime.date.today().strftime("%d.%m.%Y")
         
-        # Генерируем русскую версию
         save_single_dashboard('dark_background', os.path.join(SCRIPT_DIR, "stats_dashboard_ru_dark.png"), True, "ru", history, current_assets, current_total, today_formatted)
         save_single_dashboard('default', os.path.join(SCRIPT_DIR, "stats_dashboard_ru_light.png"), False, "ru", history, current_assets, current_total, today_formatted)
         
-        # Генерируем английскую версию
         save_single_dashboard('dark_background', os.path.join(SCRIPT_DIR, "stats_dashboard_en_dark.png"), True, "en", history, current_assets, current_total, today_formatted)
         save_single_dashboard('default', os.path.join(SCRIPT_DIR, "stats_dashboard_en_light.png"), False, "en", history, current_assets, current_total, today_formatted)
         
@@ -398,15 +388,15 @@ def status():
     # Генерация графических панелей
     generate_visual_dashboards(history, current_assets, current_total)
 
-    # Красивый вывод недельной статистики в консоль
+    # ВЫВОД СПИСКА СКАЧИВАНИЙ ЗА НЕДЕЛЮ В КОНСОЛЬ
     print("\n" + "="*70)
-    log_message("СТАТИСТИКА СКАЧИВАНИЙ ЗА ПОСЛЕДНИЕ 7 ДНЕЙ:")
+    log_message("СТАТИСТИКА СКАЧИВАНИЙ ПО ВЕРСИЯМ ЗА ПОСЛЕДНИЕ 7 ДНЕЙ:")
     today_dt = datetime.date.today()
     target_date_7d = (today_dt - datetime.timedelta(days=7)).isoformat()
     past_dates_7d = sorted([d for d in history.keys() if d <= target_date_7d])
+    
     if past_dates_7d:
-        ref_date_7d = past_dates_7d[-1]
-        ref_assets_7d = history[ref_date_7d].get("assets", {})
+        ref_assets_7d = history[past_dates_7d[-1]].get("assets", {})
     else:
         all_dates = sorted(history.keys())
         ref_assets_7d = history[all_dates[0]].get("initial_assets", history[all_dates[0]].get("assets", {})) if all_dates else {}
@@ -414,7 +404,7 @@ def status():
     for name, count in sorted(current_assets.items(), key=lambda x: x[1], reverse=True):
         prev_count = ref_assets_7d.get(name, count)
         diff = count - prev_count
-        log_message(f"  -> {name}: {count} (За последние 7 дней: +{diff})")
+        print(f"  • {name}: {count} шт. (За неделю: +{diff})")
     print("="*70 + "\n")
 
 def main():
