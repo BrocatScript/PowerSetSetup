@@ -142,32 +142,34 @@ def save_single_dashboard(style_name, file_path, is_dark, lang, history, current
         "ru": {
             "title": f"Аналитический дашборд PowerSetSetup ({today_formatted})",
             "downloads": "Установки",
-            "g1_title": "Динамика новых скачиваний по дням",
+            "g1_title": "Динамика новых скачиваний по дням (последние 10 дней)",
             "g1_x": "Дни (Дата)",
             "g1_y": "Прирост установок",
             "periods": ['Неделя', 'Месяц', 'Год', 'Всё время'],
             "g2_title": "Сравнение показателей за периоды",
             "g2_y": "Число скачиваний",
             "g3_title": "Доли популярности файлов от общего объема скачиваний",
-            "g3_leg_title": "Файлы (Полные имена):",
+            "g3_leg_title": "Файлы (Полные имена и прирост за неделю):",
             "g3_pcs": "шт.",
             "g3_other": "Другие файлы",
-            "no_data": "Нет данных"
+            "no_data": "Нет данных",
+            "weekly_label": "за неделю"
         },
         "en": {
             "title": f"PowerSetSetup Analytical Dashboard ({today_formatted})",
             "downloads": "Downloads",
-            "g1_title": "Daily Download Dynamics",
+            "g1_title": "Daily Download Dynamics (last 10 days)",
             "g1_x": "Days (Date)",
             "g1_y": "Downloads Growth",
             "periods": ['Week', 'Month', 'Year', 'Total'],
             "g2_title": "Period Comparison",
             "g2_y": "Number of Downloads",
             "g3_title": "File Popularity Share of Total Downloads",
-            "g3_leg_title": "Files (Full names):",
+            "g3_leg_title": "Files (Full names & weekly growth):",
             "g3_pcs": "pcs",
             "g3_other": "Other files",
-            "no_data": "No data"
+            "no_data": "No data",
+            "weekly_label": "weekly"
         }
     }[lang]
 
@@ -175,14 +177,12 @@ def save_single_dashboard(style_name, file_path, is_dark, lang, history, current
         fig = plt.figure(figsize=(16, 12), facecolor='#121212' if is_dark else '#ffffff')
         fig.suptitle(t["title"], fontsize=18, fontweight='bold', y=0.96, color='#ffffff' if is_dark else '#000000')
 
-        # --- ГРАФИК 1: Линейная динамика ---
+        # --- ГРАФИК 1: Линейная динамика (Ограничено последними 10 днями) ---
         ax1 = plt.subplot(2, 2, 1, facecolor='#1e1e1e' if is_dark else '#fbfbfb')
         all_keys = sorted(history.keys())
         
-        if len(all_keys) <= 15:
-            chart_dates = all_keys
-        else:
-            chart_dates = [all_keys[0]] + all_keys[-14:]
+        # Берем строго последние 10 дней
+        chart_dates = all_keys[-10:] if len(all_keys) >= 10 else all_keys
             
         dates_labels = [datetime.date.fromisoformat(d).strftime("%d.%m") for d in chart_dates]
         
@@ -240,18 +240,26 @@ def save_single_dashboard(style_name, file_path, is_dark, lang, history, current
                         xytext=(0, 4), textcoords="offset points",
                         ha='center', va='bottom', fontweight='bold', color='#ffffff' if is_dark else '#000000')
 
-        # --- ГРАФИК 3: Круговая диаграмма ---
+        # --- ГРАФИК 3: Круговая диаграмма (С еженедельным счетчиком скачиваний) ---
         ax3 = plt.subplot(2, 1, 2, facecolor='#121212' if is_dark else '#ffffff')
         sorted_files = sorted(current_assets.items(), key=lambda x: x[1], reverse=True)
         
-        all_dates = sorted(history.keys())
-        prev_assets = {}
-        if len(all_dates) > 1:
-            prev_assets = history[all_dates[-2]].get("assets", {})
+        # Находим данные ровно 7 дней назад
+        today_dt = datetime.date.today()
+        target_date_7d = (today_dt - datetime.timedelta(days=7)).isoformat()
+        past_dates_7d = sorted([d for d in history.keys() if d <= target_date_7d])
+        
+        if past_dates_7d:
+            ref_date_7d = past_dates_7d[-1]
+            prev_assets = history[ref_date_7d].get("assets", {})
         else:
-            today_str = all_dates[0] if all_dates else ""
-            if today_str:
-                prev_assets = history[today_str].get("initial_assets", history[today_str].get("assets", {}))
+            # Если истории меньше недели, берем самую первую точку
+            all_dates = sorted(history.keys())
+            if all_dates:
+                first_date = all_dates[0]
+                prev_assets = history[first_date].get("initial_assets", history[first_date].get("assets", {}))
+            else:
+                prev_assets = {}
 
         pie_values = []
         legend_labels = []
@@ -261,7 +269,7 @@ def save_single_dashboard(style_name, file_path, is_dark, lang, history, current
         for idx, (name, count) in enumerate(sorted_files):
             prev_count = prev_assets.get(name, count)
             asset_change = count - prev_count
-            change_str = f" +{asset_change}" if asset_change > 0 else ""
+            change_str = f" (+{asset_change} {t['weekly_label']})" if asset_change > 0 else ""
             
             if idx < 5:
                 pie_values.append(count)
@@ -272,7 +280,7 @@ def save_single_dashboard(style_name, file_path, is_dark, lang, history, current
                 
         if other_sum > 0:
             pie_values.append(other_sum)
-            other_change_str = f" +{other_change_sum}" if other_change_sum > 0 else ""
+            other_change_str = f" (+{other_change_sum} {t['weekly_label']})" if other_change_sum > 0 else ""
             legend_labels.append(f"{t['g3_other']} ({other_sum} {t['g3_pcs']}){other_change_str}")
             
         if sum(pie_values) > 0:
@@ -389,6 +397,25 @@ def status():
     
     # Генерация графических панелей
     generate_visual_dashboards(history, current_assets, current_total)
+
+    # Красивый вывод недельной статистики в консоль
+    print("\n" + "="*70)
+    log_message("СТАТИСТИКА СКАЧИВАНИЙ ЗА ПОСЛЕДНИЕ 7 ДНЕЙ:")
+    today_dt = datetime.date.today()
+    target_date_7d = (today_dt - datetime.timedelta(days=7)).isoformat()
+    past_dates_7d = sorted([d for d in history.keys() if d <= target_date_7d])
+    if past_dates_7d:
+        ref_date_7d = past_dates_7d[-1]
+        ref_assets_7d = history[ref_date_7d].get("assets", {})
+    else:
+        all_dates = sorted(history.keys())
+        ref_assets_7d = history[all_dates[0]].get("initial_assets", history[all_dates[0]].get("assets", {})) if all_dates else {}
+        
+    for name, count in sorted(current_assets.items(), key=lambda x: x[1], reverse=True):
+        prev_count = ref_assets_7d.get(name, count)
+        diff = count - prev_count
+        log_message(f"  -> {name}: {count} (За последние 7 дней: +{diff})")
+    print("="*70 + "\n")
 
 def main():
     status()
