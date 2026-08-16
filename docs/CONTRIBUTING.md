@@ -47,8 +47,8 @@ Thank you for considering contributing to PowerSetSetup! This document provides 
 
 ### Requirements:
 - **Windows 10/11** (primary platform)
-- **Command Prompt** or **PowerShell**
-- **Basic knowledge of batch scripting**
+- **Python** or **PowerShell**
+- **Basic knowledge of python scripting**
 
 ### Testing:
 - Test your changes on multiple Windows versions if possible
@@ -63,7 +63,7 @@ Thank you for considering contributing to PowerSetSetup! This document provides 
 - Add comments for complex logic
 
 ### Best Practices:
-- **Error Handling**: Check `errorlevel` after critical commands
+- **The presence of error checks**: in critical functions
 - **User Experience**: Provide clear messages and instructions
 
 ## 🔄 Pull Request Process
