@@ -1,4 +1,24 @@
 {
-    "version": "1.0.2-beta+build.2",
-    "download_url": "https://github.com/BrocatScript/PowerSetSetup/releases/download/v1.0.1fix/PowerSetSetup_Installer-1.0.1fix.exe"
+  "stable": {
+    "version": "1.0.1-fix",
+    "download_url": "https://github.com/BrocatScript/PowerSetSetup/releases/download/v1.0.1fix/PowerSetSetup_Installer-1.0.1fix.exe",
+    "pub_date": "2026-08-10",
+    "changelog": {
+      "en": "A critical error related to program updates has been fixed",
+      "ru": "Исправлена критическая ошибка с обновлениями программы"
+    },
+    "release_url": "https://github.com/BrocatScript/PowerSetSetup/releases/tag/v1.0.1-fix",
+    "mandatory": true
+  },
+  "beta": {
+    "version": "1.0.2-beta+build.1",
+    "download_url": "https://github.com/BrocatScript/PowerSetSetup/releases/download/v1.0.2-beta.1/PowerSetSetup_Installer-1.0.2beta.1.exe",
+    "pub_date": "2026-08-16",
+    "changelog": {
+      "en": "Performance has been improved, this is the first step in transitioning to Python",
+      "ru": "Производительность повышена, первый шаг перехода на Python"
+    },
+    "release_url": "https://github.com/BrocatScript/PowerSetSetup/releases/tag/v1.0.2-beta.1",
+    "mandatory": false
+  }
 }
