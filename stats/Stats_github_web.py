@@ -8,6 +8,7 @@ import sys
 import subprocess
 import glob
 import platform
+import math  # добавлено для округления
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
@@ -178,6 +179,9 @@ def save_single_dashboard(style_name, file_path, is_dark, lang, history, current
 
         # --- ГРАФИК 1: Линейная динамика (СТРОГО ПОСЛЕДНИЕ 10 ДНЕЙ) ---
         ax1 = plt.subplot(2, 2, 1, facecolor='#1e1e1e' if is_dark else '#fbfbfb')
+        # Делаем область первого графика квадратной
+        ax1.set_box_aspect(1)
+        
         all_keys = sorted(history.keys())
         
         # Берем только последние 10 записей без склеек
@@ -193,13 +197,24 @@ def save_single_dashboard(style_name, file_path, is_dark, lang, history, current
             else:
                 growth_values.append(history[d_str]["total"] - history[d_str].get("initial_total", history[d_str]["total"]))
         
-        ax1.yaxis.set_major_locator(matplotlib.ticker.MaxNLocator(integer=True))
-        ax1.yaxis.set_major_formatter(matplotlib.ticker.FormatStrFormatter('%d'))
+        # Настройка оси Y: целые деления, автоматический подбор шага
+        ax1.yaxis.set_major_locator(matplotlib.ticker.MaxNLocator(integer=True, nbins=6))
         
-        max_g = max(growth_values) if growth_values else 5
-        min_g = min(growth_values) if growth_values else 0
-        ax1.set_ylim(min_g - 0.015, max_g + (4.5 if max_g == min_g else 1.5))
-            
+        # Динамический расчёт границ с отступами, адаптированный под отрицательные значения
+        if growth_values:
+            data_min = min(growth_values)
+            data_max = max(growth_values)
+            range_val = data_max - data_min
+            if range_val == 0:
+                padding = 2.0
+            else:
+                padding = max(1.0, range_val * 0.15)  # минимум 1
+            y_min = math.floor(data_min - padding)
+            y_max = math.ceil(data_max + padding)
+            ax1.set_ylim(y_min, y_max)
+        else:
+            ax1.set_ylim(0, 5)
+        
         line_color = '#00adb5' if is_dark else '#1f77b4'
         ax1.plot(dates_labels, growth_values, marker='o', linewidth=2.5, color=line_color, label=t["downloads"])
         ax1.fill_between(dates_labels, growth_values, color=line_color, alpha=0.15)
