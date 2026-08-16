@@ -177,16 +177,14 @@ def save_single_dashboard(style_name, file_path, is_dark, lang, history, current
         fig = plt.figure(figsize=(16, 12), facecolor='#121212' if is_dark else '#ffffff')
         fig.suptitle(t["title"], fontsize=18, fontweight='bold', y=0.96, color='#ffffff' if is_dark else '#000000')
 
-        # --- ГРАФИК 1: Линейная динамика (СТРОГО ПОСЛЕДНИЕ 10 ДНЕЙ) ---
+        # --- ГРАФИК 1: Линейная динамика (последние N дней) ---
         ax1 = plt.subplot(2, 2, 1, facecolor='#1e1e1e' if is_dark else '#fbfbfb')
-        # Делаем область первого графика квадратной
-        ax1.set_box_aspect(1)
+        
+        DAYS_TO_SHOW = 7
+        MIN_Y_MAX = 5
         
         all_keys = sorted(history.keys())
-        
-        # Берем только последние 10 записей без склеек
-        chart_dates = all_keys[-10:] if len(all_keys) >= 10 else all_keys
-            
+        chart_dates = all_keys[-DAYS_TO_SHOW:] if len(all_keys) >= DAYS_TO_SHOW else all_keys
         dates_labels = [datetime.date.fromisoformat(d).strftime("%d.%m") for d in chart_dates]
         
         growth_values = []
@@ -197,27 +195,71 @@ def save_single_dashboard(style_name, file_path, is_dark, lang, history, current
             else:
                 growth_values.append(history[d_str]["total"] - history[d_str].get("initial_total", history[d_str]["total"]))
         
-        # Настройка оси Y: целые деления, автоматический подбор шага
-        ax1.yaxis.set_major_locator(matplotlib.ticker.MaxNLocator(integer=True, nbins=6))
+        ax1.yaxis.set_major_locator(matplotlib.ticker.MaxNLocator(integer=True, nbins=8))
         
-        # Динамический расчёт границ с отступами, адаптированный под отрицательные значения
         if growth_values:
             data_min = min(growth_values)
             data_max = max(growth_values)
-            range_val = data_max - data_min
-            if range_val == 0:
-                padding = 2.0
-            else:
-                padding = max(1.0, range_val * 0.15)  # минимум 1
-            y_min = math.floor(data_min - padding)
-            y_max = math.ceil(data_max + padding)
+            
+            y_min = data_min - 1 if data_min < 0 else 0
+            y_max = max(data_max + 1, MIN_Y_MAX)
+            y_min = math.floor(y_min)
+            y_max = math.ceil(y_max)
+            if y_min > 0:
+                y_min = 0
+            if y_max - y_min < 1:
+                y_max = y_min + 1
+                
             ax1.set_ylim(y_min, y_max)
+            ax1.relim()
+            ax1.autoscale_view()
         else:
-            ax1.set_ylim(0, 5)
+            ax1.set_ylim(0, MIN_Y_MAX)
+        
+        # --- НОВАЯ ЛОГИКА ПОДБОРА ТИКОВ ---
+        y_min, y_max = ax1.get_ylim()
+        range_val = y_max - y_min
+        
+        # Выбираем "красивый" шаг
+        if range_val <= 5:
+            step = 1
+        elif range_val <= 20:
+            step = 2
+        elif range_val <= 50:
+            step = 5
+        elif range_val <= 200:
+            step = 25
+        else:
+            step = 50
+        
+        # Первый тик — округляем вниз, последний — вниз (чтобы не выходить за пределы)
+        first_tick = math.floor(y_min / step) * step
+        last_tick = math.floor(y_max / step) * step
+        # Если last_tick == first_tick, добавляем один шаг вверх
+        if last_tick <= first_tick:
+            last_tick = first_tick + step
+        # Генерируем список тиков
+        ticks = list(range(int(first_tick), int(last_tick) + 1, int(step)))
+        # Если тиков больше 10, увеличиваем шаг (пересчитываем)
+        if len(ticks) > 10:
+            # Увеличиваем шаг в 2 раза и пересчитываем
+            step *= 2
+            first_tick = math.floor(y_min / step) * step
+            last_tick = math.floor(y_max / step) * step
+            if last_tick <= first_tick:
+                last_tick = first_tick + step
+            ticks = list(range(int(first_tick), int(last_tick) + 1, int(step)))
+        
+        ax1.set_yticks(ticks)
+        ax1.set_yticklabels([str(t) for t in ticks])
         
         line_color = '#00adb5' if is_dark else '#1f77b4'
         ax1.plot(dates_labels, growth_values, marker='o', linewidth=2.5, color=line_color, label=t["downloads"])
         ax1.fill_between(dates_labels, growth_values, color=line_color, alpha=0.15)
+        
+        if growth_values and min(growth_values) < 0 and max(growth_values) > 0:
+            ax1.axhline(y=0, color='white' if is_dark else 'gray', linestyle='-', linewidth=1, alpha=0.5)
+        
         ax1.set_title(t["g1_title"], fontsize=12, fontweight='bold', color='#ffffff' if is_dark else '#000000', pad=10)
         ax1.set_xlabel(t["g1_x"], color='#aaaaaa' if is_dark else '#555555')
         ax1.set_ylabel(t["g1_y"], color='#aaaaaa' if is_dark else '#555555')
@@ -254,11 +296,10 @@ def save_single_dashboard(style_name, file_path, is_dark, lang, history, current
                         xytext=(0, 4), textcoords="offset points",
                         ha='center', va='bottom', fontweight='bold', color='#ffffff' if is_dark else '#000000')
 
-        # --- ГРАФИК 3: Круговая диаграмма (Считаем изменения ровно за 7 дней) ---
+        # --- ГРАФИК 3: Круговая диаграмма ---
         ax3 = plt.subplot(2, 1, 2, facecolor='#121212' if is_dark else '#ffffff')
         sorted_files = sorted(current_assets.items(), key=lambda x: x[1], reverse=True)
         
-        # Находим точку ровно 7 дней назад
         today_dt = datetime.date.today()
         target_date_7d = (today_dt - datetime.timedelta(days=7)).isoformat()
         past_dates_7d = sorted([d for d in history.keys() if d <= target_date_7d])
