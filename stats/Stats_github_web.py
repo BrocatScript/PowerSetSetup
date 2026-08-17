@@ -142,7 +142,7 @@ def save_single_dashboard(style_name, file_path, is_dark, lang, history, current
         "ru": {
             "title": f"Аналитический дашборд PowerSetSetup ({today_formatted})",
             "downloads": "Установки",
-            "g1_title": "Динамика новых скачиваний по дням (последние 10 дней)",
+            "g1_title": "Динамика новых скачиваний по дням (последние 7 дней)",
             "g1_x": "Дни (Дата)",
             "g1_y": "Прирост установок",
             "periods": ['Неделя', 'Месяц', 'Год', 'Всё время'],
@@ -158,7 +158,7 @@ def save_single_dashboard(style_name, file_path, is_dark, lang, history, current
         "en": {
             "title": f"PowerSetSetup Analytical Dashboard ({today_formatted})",
             "downloads": "Downloads",
-            "g1_title": "Daily Download Dynamics (last 10 days)",
+            "g1_title": "Daily Download Dynamics (last 7 days)",
             "g1_x": "Days (Date)",
             "g1_y": "Downloads Growth",
             "periods": ['Week', 'Month', 'Year', 'Total'],
