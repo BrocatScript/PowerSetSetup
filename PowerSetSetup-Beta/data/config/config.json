@@ -1,13 +1,13 @@
 {
     "description": "settings for PowerSetSetup",
-    "language": "System",
+    "language": "Ru",
     "version": "1.0.2",
     "version_extension": "beta",
     "build": 3,
     "preliminary_versions": true,
     "check_for_updates_on_startup": true,
     "auto_update": false,
-    "theme": "System",
+    "theme": "Blue",
     "last_modified": "2026-17-08 00:00:00",
     "send_error_reports": false
 }
