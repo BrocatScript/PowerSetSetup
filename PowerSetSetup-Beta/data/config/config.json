@@ -1,12 +1,13 @@
 {
-    "language": "en",
-    "auto_language": true,
-    "allow_beta": true,
-    "auto_download_install": false,
-    "version": "1.0.2-beta",
-    "build": 2,
+    "description": "settings for PowerSetSetup",
+    "language": "System",
+    "version": "1.0.2",
+    "version_extension": "beta",
+    "build": 3,
+    "preliminary_versions": true,
+    "check_for_updates_on_startup": true,
+    "auto_update": false,
     "theme": "System",
-    "checkForUpdatesOnStartup": true,
-    "last_modified": "2026-05-21 00:45:28",
-    "description": "settings for PowerSetSetup"
+    "last_modified": "2026-17-08 00:00:00",
+    "send_error_reports": false
 }
