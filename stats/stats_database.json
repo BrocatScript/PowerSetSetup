@@ -1722,12 +1722,12 @@
         }
     },
     "2026-09-04": {
-        "total": 145,
+        "total": 147,
         "assets": {
             "PowerSetSetup-1.0.2beta.1.zip": 4,
             "PowerSetSetup-1.0.1fix.rar": 12,
-            "PowerSetSetup-1.0.1fix.zip": 31,
-            "PowerSetSetup_Installer-1.0.1fix.exe": 87,
+            "PowerSetSetup-1.0.1fix.zip": 32,
+            "PowerSetSetup_Installer-1.0.1fix.exe": 88,
             "PowerSetSetup-1.0.1.rar": 1,
             "PowerSetSetup-1.0.1.zip": 1,
             "PowerSetSetup-1.0.0.rar": 4,
