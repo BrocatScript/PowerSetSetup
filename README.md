@@ -124,12 +124,13 @@ For questions, suggestions, or collaboration:
 
 ## 🧭 Быстрая Навигация
 
+[![Download](https://img.shields.io/badge/⬇️%20Скачать-brightgreen?style=for-the-badge&logo=windows)](https://github.com/BrocatScript/PowerSetSetup/releases/latest)
+
 [![Releases](https://img.shields.io/badge/🚀%20Релизы-Последняя%20Версия-blue?style=for-the-badge&logo=github)](https://github.com/BrocatScript/PowerSetSetup/releases)
 [![Issues](https://img.shields.io/badge/🐞%20Отчет-о%20проблемах%20Bug-red?style=for-the-badge&logo=github)](https://github.com/BrocatScript/PowerSetSetup/issues)
 [![Pull Requests](https://img.shields.io/badge/🔀%20PRs-Слияния-green?style=for-the-badge&logo=github)](https://github.com/BrocatScript/PowerSetSetup/pulls)
 [![Wiki](https://img.shields.io/badge/📚%20Wiki-Документация-lightgrey?style=for-the-badge&logo=readthedocs)](https://github.com/BrocatScript/PowerSetSetup/wiki)
 [![Source](https://img.shields.io/badge/📁%20Source-Код-black?style=for-the-badge&logo=github)](https://github.com/BrocatScript/PowerSetSetup)
-[![Download](https://img.shields.io/badge/⬇️%20Скачать-Установщик-brightgreen?style=for-the-badge&logo=windows)](https://github.com/BrocatScript/PowerSetSetup/releases/latest)
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="stats/stats_dashboard_ru_dark.png">
