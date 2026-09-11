@@ -19,7 +19,7 @@ import requests
 sleep = time.sleep
 
 Name_Program = "PowerSetSetup"
-version = "1.0.2-beta+build.1"
+version = "1.0.2 Stable+build.1"
 VERSION_URL = "https://raw.githubusercontent.com/BrocatScript/PowerSetSetup/main/version.json"
 
 LOG_DIR = "logs"
@@ -28,7 +28,7 @@ if not os.path.exists(LOG_DIR):
     os.makedirs(LOG_DIR)
 
 logging.basicConfig(
-    level=logging.DEBUG,
+    level=logging.INFO, # DEBUG for detailed logs, INFO for general information
     format='%(asctime)s [%(levelname)s] %(message)s',
     handlers=[
         logging.FileHandler(LOG_FILE, mode='w', encoding='utf-8'),
@@ -98,9 +98,9 @@ def load_config(force_reload=False):
     default_config = {
         "language": "en",
         "auto_language": True,
-        "allow_beta": True,
+        "allow_beta": False,
         "auto_download_install": False,
-        "version": "1.0.2-beta",
+        "version": "1.0.2",
         "build": 1,
         "last_modified": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
         "description": "settings for PowerSetSetup"
@@ -743,6 +743,7 @@ def main_menu():
     while True:
         update_text_variables()
         clear()
+        print(f"{Fore.CYAN}PowerSetSetup {Fore.RESET}v{build_full_version(load_config())}")
         powercfg_list()
         print()
         print(lang_menu_title)
@@ -765,7 +766,7 @@ def main_menu():
             advancedSettings()
             break
         elif main_menu == "3":
-            logging.info(_("Manual update check via main menu")) # временно
+            logging.info("start Checking for updates...") # временно
             check_for_updates()
             break
         # elif main_menu == "4":
@@ -773,11 +774,11 @@ def main_menu():
             # diagnostics()
            # break
         elif main_menu == "4":
-            logging.info(_("Developer support via main menu")) # временно
+            logging.info("Support Developer") # временно
             support_developer()
             break
         elif main_menu == "5":
-            logging.info(_("Go to settings via main menu")) # временно
+            logging.info("Start Settings menu") # временно
             settings_menu()
             break
         elif main_menu in ["9", "6", "back", "b"]:
@@ -1281,6 +1282,125 @@ def open_url_support_developer(url):
     else:
         main_menu()
 
+
+def convert_time(value, default_unit="m"):
+    """
+    Convert a time string into total seconds.
+
+    Supported:
+        121314       -> interpreted as minutes by default
+        "121314m"   -> minutes
+        "1h 40m 30s"
+        "1ч 40м 30с"
+        "1h 60m 30s" -> normalized to 2h 30s
+
+    Returns:
+        int: total seconds
+
+    Raises:
+        ValueError: invalid or empty input
+    """
+    if value is None:
+        raise ValueError("Time value cannot be empty.")
+
+    text = str(value).strip().lower()
+
+    if not text:
+        raise ValueError("Time value cannot be empty.")
+
+    # Plain number = default unit
+    if re.fullmatch(r"\d+(?:\.\d+)?", text):
+        number = float(text)
+
+        if number < 0:
+            raise ValueError("Time cannot be negative.")
+
+        units = {
+            "s": 1,
+            "m": 60,
+            "h": 3600,
+        }
+
+        if default_unit not in units:
+            raise ValueError(f"Unknown default unit: {default_unit}")
+
+        return int(number * units[default_unit])
+
+    # Replace Russian units with English ones
+    text = text.replace("ч", "h")
+    text = text.replace("м", "m")
+    text = text.replace("с", "s")
+
+    pattern = r"(\d+(?:\.\d+)?)\s*(h|m|s)"
+    matches = re.findall(pattern, text)
+
+    if not matches:
+        raise ValueError("Invalid time format.")
+
+    # Make sure the entire string was understood
+    remaining = re.sub(pattern, "", text).strip()
+
+    if remaining:
+        raise ValueError(f"Invalid time format: {remaining}")
+
+    total_seconds = 0
+
+    for number, unit in matches:
+        number = float(number)
+
+        if unit == "h":
+            total_seconds += int(number * 3600)
+        elif unit == "m":
+            total_seconds += int(number * 60)
+        elif unit == "s":
+            total_seconds += int(number)
+
+    return total_seconds
+
+
+def format_time(total_seconds):
+    """
+    Convert seconds into normalized human-readable time.
+
+    Examples:
+        3600  -> "1h"
+        3630  -> "1h 30s"
+        7200  -> "2h"
+        7260  -> "2h 1m"
+    """
+    total_seconds = int(total_seconds)
+
+    if total_seconds < 0:
+        raise ValueError("Time cannot be negative.")
+
+    hours, remainder = divmod(total_seconds, 3600)
+    minutes, seconds = divmod(remainder, 60)
+
+    parts = []
+
+    if hours:
+        parts.append(f"{hours}h")
+
+    if minutes:
+        parts.append(f"{minutes}m")
+
+    if seconds:
+        parts.append(f"{seconds}s")
+
+    return " ".join(parts) if parts else "0s"
+
+
+def normalize_time(value, default_unit="m"):
+    """
+    Convert any supported time format directly into normalized text.
+
+    Example:
+        "1ч 60м 30с" -> "2h 30s"
+    """
+    total_seconds = convert_time(value, default_unit)
+    return format_time(total_seconds)
+
+
 def settings_menu():
     logging.debug("Переход в меню настроек")
     while True:
@@ -1338,15 +1458,271 @@ def setting_menu_scheme():
         elif choice in ["5", "0", "exit", "end", "e"]:
             end()
             break
-        elif choice in ["1", "2", "3"]:
-            clear()
-            print("This setting is not implemented yet.")
-            sleep(2)
+        elif choice == "1":
+            logging.info("Переход в настройки таймаута монитора")
+            settings_timeout_monitor()
+            break
+        elif choice == "2":
+            logging.info("Переход в настройки таймаута сна")
+            settings_time_sleep()
+            break
+        elif choice == "3":
+            logging.info("Переход в настройки таймаута диска")
+            settings_timeout_disk()
+            break
         else:
             print(lang_error_input)
             sleep(1)
 
-def setting_menu_scheme_page2():
+def settings_timeout_disk():
+    while True:
+        clear()
+        print(f"{lang_settings_timeout_disk}\n")
+        print(f"1. 0 {lang_minutes}")
+        print(f"2. 10 {lang_minutes}")
+        print(f"3. 15 {lang_minutes}")
+        print(f"4. 20 {lang_minutes}")
+        print(f"5. {lang_manual_input}")
+        print(f"6. {lang_back_main_menu}")
+        print(f"7. {lang_exit}")
+
+        choice = input(lang_choice).lower()
+        if choice in ["6", "9", "back", "b"]:
+            setting_menu_scheme()
+            break
+        elif choice in ["7", "0", "exit", "end", "e"]:
+            end()
+            break
+        elif choice == "1":
+            settings_timeout_disk_sleep(0)
+        elif choice == "2":
+            settings_timeout_disk_sleep(10)
+        elif choice == "3":
+            settings_timeout_disk_sleep(15)
+        elif choice == "4":
+            settings_timeout_disk_sleep(20)
+        elif choice == "5":
+            settings_timeout_disk_sleep_manual()
+            break
+        else:
+            clear()
+            print(lang_error_input)
+            sleep(1)
+    setting_menu_scheme()
+
+def settings_timeout_disk_sleep_manual():
+    clear()
+    while True:
+        try:
+            clear()
+            print(f"{lang_manual_input} {lang_settings_timeout_disk}")
+            timeout_input = input(f"\n{lang_enter_timeout_minutes} {Fore.LIGHTBLACK_EX}(10m, 1h 30м, 90s, 15ч):{Fore.WHITE} ")
+            if timeout_input in ["back", "b"]:
+                settings_timeout_disk()
+                break
+            elif timeout_input in ["exit", "end", "e"]:
+                end()
+                break
+            total_seconds = convert_time(timeout_input, default_unit="m")
+            timeout_minutes = total_seconds // 60
+
+            subprocess.run(["powercfg", "/change", "disk-timeout-ac", str(timeout_minutes)], check=True)
+            clear()
+            print(f"{lang_settings_succesfull} {format_time(total_seconds)}.")
+            logging.info(f"Disk timeout set to {timeout_input} = ({timeout_minutes}) minutes. {format_time(total_seconds)}")
+            sleep(2)
+            break
+        except ValueError as e:
+            clear()
+            print(f"{Fore.RED}{lang_error_input}: {e}")
+            logging.error(f"Invalid input for disk timeout: {e}")
+            sleep(1)
+        except subprocess.CalledProcessError as e:
+            clear()
+            print(f"{Fore.RED}Critical error: {e}")
+            logging.error(f"Failed to set disk timeout: {e}")
+            sleep(1)
+    settings_timeout_disk()
+
+def settings_timeout_disk_sleep(timeout_minutes):
+    clear()
+    try:
+        subprocess.run(["powercfg", "/change", "disk-timeout-ac", str(timeout_minutes)], check=True)
+        print(f"{lang_settings_succesfull} {timeout_minutes} {lang_minutes}.")
+        logging.info(f"Disk timeout set to {timeout_minutes} minutes.")
+        sleep(2)
+    except subprocess.CalledProcessError as e:
+        clear()
+        print(f"{Fore.RED}Critical error: {e}")
+        logging.error(f"Failed to set disk timeout: {e}")
+
+
+def settings_time_sleep():
+    while True:
+        clear()
+        print(f"{lang_settings_time_sleep}\n")
+        print(f"1. 0 {lang_minutes}")
+        print(f"2. 10 {lang_minutes}")
+        print(f"3. 15 {lang_minutes}")
+        print(f"4. 20 {lang_minutes}")
+        print(f"5. {lang_manual_input}")
+        print(f"6. {lang_back_main_menu}")
+        print(f"7. {lang_exit}")
+
+        choice = input(lang_choice).lower()
+        if choice in ["6", "9", "back", "b"]:
+            setting_menu_scheme()
+            break
+        elif choice in ["7", "0", "exit", "end", "e"]:
+            end()
+            break
+        elif choice == "1":
+            settings_timeout_sleep(0)
+        elif choice == "2":
+            settings_timeout_sleep(10)
+        elif choice == "3":
+            settings_timeout_sleep(15)
+        elif choice == "4":
+            settings_timeout_sleep(20)
+        elif choice == "5":
+            settings_timeout_sleep_manual()
+            break
+        else:
+            clear()
+            print(lang_error_input)
+            sleep(1)
+    setting_menu_scheme()
+
+def settings_timeout_sleep_manual():
+    clear()
+    while True:
+        try:
+            clear()
+            print(f"{lang_manual_input} {lang_settings_time_sleep}")
+            timeout_input = input(f"\n{lang_enter_timeout_minutes} {Fore.LIGHTBLACK_EX}(10m, 1h 30м, 90s, 15ч):{Fore.WHITE} ")
+            if timeout_input in ["back", "b"]:
+                settings_time_sleep()
+                break
+            elif timeout_input in ["exit", "end", "e"]:
+                end()
+                break
+            total_seconds = convert_time(timeout_input, default_unit="m")
+            timeout_minutes = total_seconds // 60
+
+            subprocess.run(["powercfg", "/change", "standby-timeout-ac", str(timeout_minutes)], check=True)
+            clear()
+            print(f"{lang_settings_succesfull} {format_time(total_seconds)}.")
+            logging.info(f"Sleep timeout set to {timeout_input} = ({timeout_minutes}) minutes. {format_time(total_seconds)}")
+            sleep(2)
+            break
+        except ValueError as e:
+            clear()
+            print(f"{Fore.RED}{lang_error_input}: {e}")
+            logging.error(f"Invalid input for sleep timeout: {e}")
+            sleep(1)
+        except subprocess.CalledProcessError as e:
+            clear()
+            print(f"{Fore.RED}Critical error: {e}")
+            logging.error(f"Failed to set sleep timeout: {e}")
+            sleep(1)
+    settings_time_sleep()
+
+def settings_timeout_sleep(timeout_minutes):
+    clear()
+    try:
+        subprocess.run(["powercfg", "/change", "standby-timeout-ac", str(timeout_minutes)], check=True)
+        print(f"{lang_settings_succesfull} {timeout_minutes} {lang_minutes}.")
+        logging.info(f"Sleep timeout set to {timeout_minutes} minutes.")
+        sleep(2)
+    except subprocess.CalledProcessError as e:
+        clear()
+        print(f"{Fore.RED}Critical error: {e}")
+        logging.error(f"Failed to set sleep timeout: {e}")
+
+
+def settings_timeout_monitor():
+    while True:
+        clear()
+        print(f"{lang_settings_timeout_monitor}\n")
+        print(f"1. 0 {lang_minutes}")
+        print(f"2. 10 {lang_minutes}")
+        print(f"3. 15 {lang_minutes}")
+        print(f"4. 20 {lang_minutes}")
+        print(f"5. {lang_manual_input}")
+        print(f"6. {lang_back_main_menu}")
+        print(f"7. {lang_exit}")
+
+        choice = input(lang_choice).lower()
+        if choice in ["6", "9", "back", "b"]:
+            setting_menu_scheme()
+            break
+        elif choice in ["7", "0", "exit", "end", "e"]:
+            end()
+            break
+        elif choice == "1":
+            settings_timeout_monitor_sleep(0)
+        elif choice == "2":
+            settings_timeout_monitor_sleep(10)
+        elif choice == "3":
+            settings_timeout_monitor_sleep(15)
+        elif choice == "4":
+            settings_timeout_monitor_sleep(20)
+        elif choice == "5":
+            settings_timeout_monitor_sleep_manual()
+            break
+        else:
+            clear()
+            print(lang_error_input)
+            sleep(1)
+
+def settings_timeout_monitor_sleep(timeout_minutes):
+    clear()
+    try:
+        subprocess.run(["powercfg", "/change", "monitor-timeout-ac", str(timeout_minutes)], check=True)
+        print(f"{lang_settings_succesfull} {timeout_minutes} {lang_minutes}.")
+        logging.info(f"Monitor timeout set to {timeout_minutes} minutes.")
+        sleep(2)
+    except subprocess.CalledProcessError as e:
+        clear()
+        print(f"{Fore.RED}Critical error: {e}")
+        logging.error(f"Failed to set monitor timeout: {e}")
+
+def settings_timeout_monitor_sleep_manual():
+    clear()
+    while True:
+        try:
+            clear()
+            print(f"{lang_manual_input} {lang_settings_timeout_monitor}")
+            timeout_input = input(f"\n{lang_enter_timeout_minutes} {Fore.LIGHTBLACK_EX}(10m, 1h 30м, 90s, 15ч):{Fore.WHITE} ")
+            if timeout_input in ["back", "b"]:
+                settings_timeout_monitor()
+                break
+            elif timeout_input in ["exit", "end", "e"]:
+                end()
+                break
+            total_seconds = convert_time(timeout_input, default_unit="m")
+            timeout_minutes = total_seconds // 60
+
+            subprocess.run(["powercfg", "/change", "monitor-timeout-ac", str(timeout_minutes)], check=True)
+            clear()
+            print(f"{lang_settings_succesfull} {format_time(total_seconds)}.")
+            logging.info(f"Monitor timeout set to {timeout_input} = ({timeout_minutes}) minutes. {format_time(total_seconds)}")
+            sleep(2)
+            break
+        except ValueError as e:
+            clear()
+            print(f"{Fore.RED}{lang_error_input}: {e}")
+            logging.error(f"Invalid input for monitor timeout: {e}")
+            sleep(1)
+        except subprocess.CalledProcessError as e:
+            clear()
+            print(f"{Fore.RED}Critical error: {e}")
+            logging.error(f"Failed to set monitor timeout: {e}")
+            sleep(1)
+    settings_timeout_monitor()
+
+
+def setting_menu_scheme_page2(): # not ready yet
     while True:
         clear()
         print(f"{lang_settings_menu_scheme}\n")
