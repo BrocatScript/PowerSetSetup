@@ -200,22 +200,35 @@ def save_single_dashboard(style_name, file_path, is_dark, lang, history, current
         if growth_values:
             data_min = min(growth_values)
             data_max = max(growth_values)
-            
-            y_min = data_min - 1 if data_min < 0 else 0
+
+            if data_min >= 0:
+                # Обычный случай (нет отрицательных значений): держим ноль
+                # почти у самого низа графика — небольшой фиксированный
+                # отступ, которого достаточно, чтобы точку было видно,
+                # но недостаточно, чтобы визуально "поднимать" график.
+                y_min = -0.1
+            else:
+                # Если есть провалы ниже нуля, отступ считаем от разброса
+                # данных, чтобы самая нижняя точка не обрезалась по краю.
+                data_range = data_max - data_min
+                margin = max(0.5, data_range * 0.12)
+                y_min = data_min - margin
+
             y_max = max(data_max + 1, MIN_Y_MAX)
-            y_min = math.floor(y_min)
+
+            # "Красивое" округление вниз — но не раздуваем маленький
+            # отступ у нуля (иначе ноль опять визуально уедет вверх).
+            if y_min < -0.1:
+                y_min = math.floor(y_min * 2) / 2
             y_max = math.ceil(y_max)
-            if y_min > 0:
-                y_min = 0
-            if y_max - y_min < 1:
-                y_max = y_min + 1
-                
+
+            if y_max - y_min < 2:
+                y_max = y_min + 2
+
             ax1.set_ylim(y_min, y_max)
-            ax1.relim()
-            ax1.autoscale_view()
         else:
-            ax1.set_ylim(0, MIN_Y_MAX)
-        
+            ax1.set_ylim(-0.1, MIN_Y_MAX)
+
         # --- НОВАЯ ЛОГИКА ПОДБОРА ТИКОВ ---
         y_min, y_max = ax1.get_ylim()
         range_val = y_max - y_min
@@ -233,7 +246,9 @@ def save_single_dashboard(style_name, file_path, is_dark, lang, history, current
             step = 50
         
         # Первый тик — округляем вниз, последний — вниз (чтобы не выходить за пределы)
-        first_tick = math.floor(y_min / step) * step
+        # Для положительной серии не показываем отрицательные тики:
+        # отрицательный предел остаётся только как небольшой визуальный запас.
+        first_tick = 0 if min(growth_values, default=0) >= 0 else math.floor(y_min / step) * step
         last_tick = math.floor(y_max / step) * step
         # Если last_tick == first_tick, добавляем один шаг вверх
         if last_tick <= first_tick:
@@ -257,8 +272,7 @@ def save_single_dashboard(style_name, file_path, is_dark, lang, history, current
         ax1.plot(dates_labels, growth_values, marker='o', linewidth=2.5, color=line_color, label=t["downloads"])
         ax1.fill_between(dates_labels, growth_values, color=line_color, alpha=0.15)
         
-        if growth_values and min(growth_values) < 0 and max(growth_values) > 0:
-            ax1.axhline(y=0, color='white' if is_dark else 'gray', linestyle='-', linewidth=1, alpha=0.5)
+
         
         ax1.set_title(t["g1_title"], fontsize=12, fontweight='bold', color='#ffffff' if is_dark else '#000000', pad=10)
         ax1.set_xlabel(t["g1_x"], color='#aaaaaa' if is_dark else '#555555')
@@ -334,12 +348,45 @@ def save_single_dashboard(style_name, file_path, is_dark, lang, history, current
         if sum(pie_values) > 0:
             pie_colors = ['#00adb5', '#ff2e63', '#00e676', '#f8b500', '#9b5de5', '#ff9f43'] if is_dark else ['#5dade2', '#e74c3c', '#2ecc71', '#f1c40f', '#9b5de5', '#e67e22']
             
+            # Адаптивные подписи процентов: слишком маленькие сектора
+            # не получают текст, а для небольших секторов шрифт уменьшается.
+            def adaptive_autopct(pct):
+                # Показываем даже маленькие, но реально читаемые сектора.
+                # Совсем крошечные (меньше 2%) лучше оставить без текста.
+                if pct < 2.0:
+                    return ""
+                return f"{pct:.1f}%"
+
             wedges, texts, autotexts = ax3.pie(
-                pie_values, labels=None, autopct='%1.1f%%', startangle=140, 
-                colors=pie_colors[:len(pie_values)], pctdistance=0.7,
-                textprops={'color': '#ffffff' if is_dark else '#000000', 'fontsize': 11, 'weight': 'bold'}
+                pie_values, labels=None, autopct=adaptive_autopct, startangle=140,
+                colors=pie_colors[:len(pie_values)], pctdistance=0.68,
+                textprops={
+                    'color': '#ffffff' if is_dark else '#000000',
+                    'fontsize': 11,
+                    'weight': 'bold'
+                }
             )
-            
+
+            for wedge, autotext in zip(wedges, autotexts):
+                pct = (wedge.theta2 - wedge.theta1) / 360.0 * 100.0
+                if not autotext.get_text():
+                    continue
+
+                if pct >= 50:
+                    fontsize = 14
+                elif pct >= 20:
+                    fontsize = 11
+                elif pct >= 10:
+                    fontsize = 9.5
+                elif pct >= 6:
+                    fontsize = 8
+                elif pct >= 4:
+                    fontsize = 7
+                else:
+                    fontsize = 6.2
+
+                autotext.set_fontsize(fontsize)
+
             leg = ax3.legend(wedges, legend_labels, title=t["g3_leg_title"], loc="center left", bbox_to_anchor=(1.0, 0.5), 
                              facecolor='#1e1e1e' if is_dark else '#f5f5f5', edgecolor='#333333' if is_dark else '#cccccc', fontsize=10)
             plt.setp(leg.get_texts(), color='#ffffff' if is_dark else '#000000')
