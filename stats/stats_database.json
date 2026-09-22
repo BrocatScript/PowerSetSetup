@@ -2236,5 +2236,37 @@
             "PowerSetSetup-1.0.0.rar": 4,
             "PowerSetSetup-1.0.0.zip": 5
         }
+    },
+    "2026-09-22": {
+        "total": 182,
+        "assets": {
+            "PowerSetSetup-1.0.2build1.7z": 5,
+            "PowerSetSetup-1.0.2build1.rar": 2,
+            "PowerSetSetup-1.0.2build1.zip": 2,
+            "PowerSetSetup_Installer-1.0.2.exe": 17,
+            "PowerSetSetup-1.0.2beta.1.zip": 4,
+            "PowerSetSetup-1.0.1fix.rar": 13,
+            "PowerSetSetup-1.0.1fix.zip": 33,
+            "PowerSetSetup_Installer-1.0.1fix.exe": 95,
+            "PowerSetSetup-1.0.1.rar": 1,
+            "PowerSetSetup-1.0.1.zip": 1,
+            "PowerSetSetup-1.0.0.rar": 4,
+            "PowerSetSetup-1.0.0.zip": 5
+        },
+        "initial_total": 181,
+        "initial_assets": {
+            "PowerSetSetup-1.0.2build1.7z": 4,
+            "PowerSetSetup-1.0.2build1.rar": 2,
+            "PowerSetSetup-1.0.2build1.zip": 2,
+            "PowerSetSetup_Installer-1.0.2.exe": 17,
+            "PowerSetSetup-1.0.2beta.1.zip": 4,
+            "PowerSetSetup-1.0.1fix.rar": 13,
+            "PowerSetSetup-1.0.1fix.zip": 33,
+            "PowerSetSetup_Installer-1.0.1fix.exe": 95,
+            "PowerSetSetup-1.0.1.rar": 1,
+            "PowerSetSetup-1.0.1.zip": 1,
+            "PowerSetSetup-1.0.0.rar": 4,
+            "PowerSetSetup-1.0.0.zip": 5
+        }
     }
 }
