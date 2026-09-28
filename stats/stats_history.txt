@@ -1031,9 +1031,9 @@
    -> PowerSetSetup-1.0.1.rar: 1 (+0)
    -> PowerSetSetup-1.0.1.zip: 1 (+0)
 
-[28.09.2026] Всего установок: 216 (+2 за день)
+[28.09.2026] Всего установок: 219 (+5 за день)
    -> PowerSetSetup_Installer-1.0.1fix.exe: 95 (+0)
-   -> PowerSetSetup_Installer-1.0.2.exe: 47 (+2)
+   -> PowerSetSetup_Installer-1.0.2.exe: 50 (+5)
    -> PowerSetSetup-1.0.1fix.zip: 33 (+0)
    -> PowerSetSetup-1.0.1fix.rar: 13 (+0)
    -> PowerSetSetup-1.0.2build1.7z: 6 (+0)
