@@ -25,7 +25,7 @@
     "version": "1.02.1",
     "winget_update": false,
     "github_update": true,
-    "download_url": "none",
+    "download_url": "None",
     "portable_format": [
       ".zip"
     ],
