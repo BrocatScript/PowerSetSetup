@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: v1.0.2 beta\n"
 "Report-Msgid-Bugs-To: brocatscript@yandex.com\n"
 "POT-Creation-Date: 2025-12-21 23:33+0300\n"
-"PO-Revision-Date: 2026-02-07 00:25+0300\n"
+"PO-Revision-Date: 2026-10-10 21:45+0300\n"
 "Last-Translator: BrocatScript <brocatscript@yandex.com>\n"
 "Language: en\n"
 "Language-Team: BrocatScript en <>\n"
@@ -17,6 +17,56 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.18.0\n"
+
+msgid "not selected"
+msgstr "не выбрано"
+
+msgid "Remembered format:"
+msgstr "Запомненный формат:"
+
+msgid "Portable update format"
+msgstr "Формат портативных обновлений"
+
+#, fuzzy
+msgid "Auto language detection:"
+msgstr "Настройки языка"
+
+#, fuzzy, python-brace-format
+msgid "{Fore.CYAN}Enable{Fore.RESET} auto language detection"
+msgstr "{Fore.CYAN}Включить{Fore.RESET} beta-версии обновлений"
+
+#, fuzzy, python-brace-format
+msgid "{Fore.CYAN}Disable{Fore.RESET} auto language detection"
+msgstr "{Fore.CYAN}Выключить{Fore.RESET} beta-версии обновлений"
+
+#, fuzzy, python-brace-format
+msgid "Press {Fore.CYAN}Enter{Fore.RESET} to continue..."
+msgstr "{Fore.CYAN}Включить{Fore.RESET} beta-версии обновлений"
+
+#, fuzzy
+msgid "A required update is available"
+msgstr "Доступно исправление для этого обновления:"
+
+#, fuzzy
+msgid "Checking for updates..."
+msgstr "Проверить обновления"
+
+msgid "Type r to turn \"Remember my choice\" on or off"
+msgstr "Введите r, чтобы включить или выключить \"Запомнить выбор\""
+
+msgid "Remember my choice"
+msgstr "Запомнить выбор"
+
+msgid "Choose the archive format to download:"
+msgstr "Выберите формат архива для загрузки:"
+
+#, fuzzy
+msgid "Install it from the main menu:"
+msgstr "Переход в главное меню"
+
+#, python-brace-format
+msgid "Details: {details}"
+msgstr "Подробнее: {details}"
 
 #, python-brace-format
 msgid ""
@@ -61,17 +111,12 @@ msgstr "Экономия энергии"
 msgid "Change language"
 msgstr "Сменить язык"
 
-msgid "Current language: English"
+#, fuzzy
+msgid "Current language:"
 msgstr "Текущий язык: Русский"
 
 msgid "Select language:"
 msgstr "Выберите язык:"
-
-msgid "Русский"
-msgstr "Русский"
-
-msgid "English"
-msgstr "English"
 
 msgid "Settings"
 msgstr "Настройки"
@@ -146,7 +191,8 @@ msgstr "Баланс электропотребления"
 msgid "Lowers battery consumption"
 msgstr "Снижает энергопотребление батареи"
 
-msgid "Fore.CYAN}Result before:"
+#, python-brace-format
+msgid "{Fore.CYAN}Result before:"
 msgstr "{Fore.CYAN}Результат до:"
 
 #, python-brace-format
@@ -289,6 +335,9 @@ msgid "The automatic update check is completed."
 msgstr "Автоматическая проверка обновлений завершена."
 
 # errors
+msgid "Server-side problem: invalid version manifest format!"
+msgstr "Проблема на стороне сервера: недопустимый формат манифеста версии!"
+
 #, python-brace-format
 msgid ""
 "{Fore.RED}ERROR: YOUR SYSTEM IS NOT {Fore.CYAN}(WINDOWS "
@@ -479,4 +528,19 @@ msgstr "Ошибка при автоматической проверке обн
 
 msgid "Updates verification error"
 msgstr "Ошибка при проверке обновлений"
+
+#~ msgid "Details"
+#~ msgstr "Подробнее"
+
+#~ msgid "Install it from the main menu:"
+#~ msgstr "Переход в главное меню"
+
+#~ msgid "Details: {details}"
+#~ msgstr "Подробнее: {details}"
+
+#~ msgid "Русский"
+#~ msgstr "Русский"
+
+#~ msgid "English"
+#~ msgstr "English"
 

@@ -1,22 +1,63 @@
 # Translations template for PROJECT.
 # Copyright (C) 2025-2026 BrocatScript
 # This file is distributed under the same license as the PROJECT project.
-# FIRST AUTHOR <brocatscript@yandex.com>, 2025-2026.
+# FIRST AUTHOR <brocatscript.support@gmail.com>, 2025-2026.
 #
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: v1.0.2 beta\n"
+"Project-Id-Version: v1.02.2 Stable\n"
 "Report-Msgid-Bugs-To: brocatscript@yandex.com\n"
 "POT-Creation-Date: 2025-12-21 23:33+0300\n"
 "PO-Revision-Date: 2026-02-06 22:58+0300\n"
-"Last-Translator: BrocatScript <brocatscript@yandex.com>\n"
+"Last-Translator: BrocatScript <brocatscript.support@gmail.com>\n"
 "Language-Team: BrocatScript LANGUAGE <>\n"
-"MIME-Version: 1.0.2 beta\n"
+"MIME-Version: 1.02.2 Stable\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.17.0\n"
 
+msgid "not selected"
+msgstr "не выбрано"
+
+msgid "Remembered format:"
+msgstr "Запомненный формат:"
+
+msgid "Portable update format"
+msgstr "Формат портативных обновлений"
+
+msgid "Auto language detection:"
+msgstr "Автоопределение языка:"
+
+msgid "{Fore.CYAN}Enable{Fore.RESET} auto language detection"
+msgstr "{Fore.CYAN}Включить{Fore.RESET} автоматическое определение языка"
+
+msgid "{Fore.CYAN}Disable{Fore.RESET} auto language detection"
+msgstr "{Fore.CYAN}Отключить{Fore.RESET} автоматическое определение языка"
+
+msgid "Press {Fore.CYAN}Enter{Fore.RESET} to continue..."
+msgstr "Нажмите любую {Fore.CYAN}кнопку{Fore.RESET}, чтобы продолжить..."
+
+msgid "A required update is available"
+msgstr "Доступно необходимое обновление"
+
+msgid "Checking for updates..."
+msgstr "Проверка обновлений..."
+
+msgid 'Type r to turn "Remember my choice" on or off'
+msgstr 'Введите r, чтобы включить или выключить "Запомнить выбор"'
+
+msgid "Remember my choice"
+msgstr "Запомнить выбор"
+
+msgid "Choose the archive format to download:"
+msgstr "Выберите формат архива для загрузки:"
+
+msgid "Install it from the main menu:"
+msgstr "Установите его из главного меню:"
+
+msgid "Details: {details}"
+msgstr "Подробнее: {details}"
 
 msgid "{Fore.RED}WARNING: Available to add: only{Fore.CYAN}\"Ultimate Performance\"!"
 msgstr "{Fore.RED}ВНИМАНИЕ! Доступно для добавления: Только {Fore.WHITE}\"Максимальная производительность\"!"
@@ -31,7 +72,7 @@ msgid "Back to main menu"
 msgstr "Вернуться в главное меню"
 
 msgid "Back to Advanced Settings"
-msgstr "Вернуться в расширенные параметры"
+msgstr "Вернуться в расширенные параметры"+
 
 msgid "Exit"
 msgstr "Выйти"
@@ -51,17 +92,11 @@ msgstr "Экономия энергии"
 msgid "Change language"
 msgstr "Сменить язык"
 
-msgid "Current language: English"
-msgstr "Текущий язык: Русский"
+msgid "Current language:"
+msgstr "Текущий язык:"
 
 msgid "Select language:"
 msgstr "Выберите язык:"
-
-msgid "Русский"
-msgstr "Русский"
-
-msgid "English"
-msgstr "English"
 
 msgid "Settings"
 msgstr "Настройки"
@@ -135,7 +170,7 @@ msgstr "Баланс электропотребления"
 msgid "Lowers battery consumption"
 msgstr "Снижает энергопотребление батареи"
 
-msgid "Fore.CYAN}Result before:"
+msgid "{Fore.CYAN}Result before:"
 msgstr "{Fore.CYAN}Результат до:"
 
 msgid "{Fore.CYAN}Result after:"
@@ -271,6 +306,9 @@ msgid "The automatic update check is completed."
 msgstr "Автоматическая проверка обновлений завершена."
 
 # errors
+
+msgid "Server-side problem: invalid version manifest format!"
+msgstr "Проблема на стороне сервера: недопустимый формат манифеста версии!"
 
 msgid "{Fore.RED}ERROR: YOUR SYSTEM IS NOT {Fore.CYAN}(WINDOWS 10/11){Fore.RESET}, THE PROGRAM IS TERMINATING!"
 msgstr "{Fore.RED}ОШИБКА: ВАША СИСТЕМА НЕ ЯВЛЯЕТСЯ {Fore.CYAN}(WINDOWS 10/11){Fore.RESET}, ПРОГРАММА ЗАКРЫВАЕТСЯ!"
