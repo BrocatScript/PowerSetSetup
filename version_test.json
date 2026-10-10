@@ -3,7 +3,7 @@
     "version": "1.02.1",
     "winget_update": true,
     "github_update": true,
-    "download_url": "https://github.com/BrocatScript/PowerSetSetup/releases/download/v1.02.1/PowerSetSetup_Installer-1.02.1.exe",
+    "download_url": "https://github.com/BrocatScript/PowerSetSetup/releases/download/v1.0.2build1/PowerSetSetup_Installer-1.0.2.exe",
     "portable_format": [
       ".7z",
       ".zip",
