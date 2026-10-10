@@ -41,17 +41,5 @@
     },
     "release_url": "https://github.com/BrocatScript/PowerSetSetup/releases/tag/v1.02.1-beta",
     "mandatory": false
-  },
-  "demo": {
-    "version": "1.03.0",
-    "winget_update": false,
-    "github_update": true,
-    "download_url": "demo",
-    "changelog": {
-      "en": "New GUI",
-      "ru": "Новый интерфейс"
-    },
-    "release_url": "https://github.com/BrocatScript/PowerSetSetup/releases/tag/v1.03.0-demo",
-    "mandatory": false
   }
 }
