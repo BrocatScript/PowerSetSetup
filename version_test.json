@@ -10,36 +10,33 @@
       ".rar"
     ],
     "portable_download_url": [
-        "https://github.com/BrocatScript/PowerSetSetup/releases/download/v1.02.1/PowerSetSetup_portable-1.02.1.7z",
-        "https://github.com/BrocatScript/PowerSetSetup/releases/download/v1.02.1/PowerSetSetup_portable-1.02.1.zip"
+        "https://github.com/BrocatScript/PowerSetSetup/releases/download/v1.0.2build1/PowerSetSetup-1.0.2build1.7z",
+        "https://github.com/BrocatScript/PowerSetSetup/releases/download/v1.0.2build1/PowerSetSetup-1.0.2build1.zip",
+        "https://github.com/BrocatScript/PowerSetSetup/releases/download/v1.0.2build1/PowerSetSetup-1.0.2build1.rar"
     ],
     "changelog": {
       "en": "A critical error related to program updates has been fixed",
       "ru": "Исправлена критическая ошибка с обновлениями программы"
     },
-    "release_url": "https://github.com/BrocatScript/PowerSetSetup/releases/tag/v1.02.1",
+    "release_url": "https://github.com/BrocatScript/PowerSetSetup/releases/tag/v1.0.2build1",
     "mandatory": true
   },
   "beta": {
     "version": "1.02.1",
     "winget_update": false,
     "github_update": true,
-    "download_url": "https://github.com/BrocatScript/PowerSetSetup/releases/download/v1.02.1-beta/PowerSetSetup_Installer-1.02.1-beta.exe",
+    "download_url": "none",
     "portable_format": [
-      ".7z",
       ".zip",
-      ".tar",
-      ".rar"
     ],
     "portable_download_url": [
-        "https://github.com/BrocatScript/PowerSetSetup/releases/download/v1.02.1-beta/PowerSetSetup_portable-1.02.1-beta.zip",
-        "https://github.com/BrocatScript/PowerSetSetup/releases/download/v1.02.1-beta/PowerSetSetup_portable-1.02.1-beta.7z"
+        "https://github.com/BrocatScript/PowerSetSetup/releases/download/v1.0.2-beta.1/PowerSetSetup-1.0.2beta.1.zip",
     ],
     "changelog": {
       "en": "Performance has been improved, this is the first step in transitioning to Python",
       "ru": "Производительность повышена, первый шаг перехода на Python"
     },
-    "release_url": "https://github.com/BrocatScript/PowerSetSetup/releases/tag/v1.02.1-beta",
+    "release_url": "https://github.com/BrocatScript/PowerSetSetup/releases/tag/v1.0.2-beta.1",
     "mandatory": false
   },
   "demo": {
