@@ -86,7 +86,7 @@ The new architecture is being developed with future improvements and further exp
 
 # 🔮 Future Updates
 
-## 📅 October 2026
+## 📅 October 2026.11.10(Y.D.M)
 
 The following improvements are currently planned for October 2026:
 
@@ -132,7 +132,7 @@ Your interest and support help the project continue to grow and improve.
 
 ---
 
-## 📅 Сентябрь 2026
+## 📅 Сентябрь 2026.10.11(Г.М.Д)
 
 ### 🚀 Обновление разработки
 
