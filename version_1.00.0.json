@@ -1,45 +1,42 @@
 {
   "stable": {
-    "version": "1.02.1",
-    "winget_update": true,
+    "version": "1.02.2",
+    "winget_update": false,
     "github_update": true,
-    "download_url": "https://github.com/BrocatScript/PowerSetSetup/releases/download/v1.0.2build1/PowerSetSetup_Installer-1.0.2.exe",
+    "download_url": "https://github.com/BrocatScript/PowerSetSetup/releases/download/v1.02.2/PowerSetSetup_Installer-1.02.2.exe",
     "portable_format": [
       ".7z",
       ".zip",
       ".rar"
     ],
     "portable_download_url": [
-        "https://github.com/BrocatScript/PowerSetSetup/releases/download/v1.02.1/PowerSetSetup_portable-1.02.1.7z",
-        "https://github.com/BrocatScript/PowerSetSetup/releases/download/v1.02.1/PowerSetSetup_portable-1.02.1.zip"
+        "https://github.com/BrocatScript/PowerSetSetup/releases/download/v1.02.2/PowerSetSetup-1.02.2-portable.7z",
+        "https://github.com/BrocatScript/PowerSetSetup/releases/download/v1.02.2/PowerSetSetup-1.02.2-portable.zip",
+        "https://github.com/BrocatScript/PowerSetSetup/releases/download/v1.02.2/PowerSetSetup-1.02.2-portable.rar"
     ],
     "changelog": {
-      "en": "A critical error related to program updates has been fixed",
-      "ru": "Исправлена критическая ошибка с обновлениями программы"
+      "en": "The error related to program updates has been fixed, the translation has been corrected, and the new version format has been implemented",
+      "ru": "Исправлена ошибка, связанная с обновлениями программы, скорректирован перевод и реализован новый формат версий"
     },
-    "release_url": "https://github.com/BrocatScript/PowerSetSetup/releases/tag/v1.02.1",
+    "release_url": "https://github.com/BrocatScript/PowerSetSetup/releases/tag/v1.02.2",
     "mandatory": true
   },
   "beta": {
     "version": "1.02.1",
     "winget_update": false,
     "github_update": true,
-    "download_url": "https://github.com/BrocatScript/PowerSetSetup/releases/download/v1.02.1-beta/PowerSetSetup_Installer-1.02.1-beta.exe",
+    "download_url": "None",
     "portable_format": [
-      ".7z",
-      ".zip",
-      ".tar",
-      ".rar"
+      ".zip"
     ],
     "portable_download_url": [
-        "https://github.com/BrocatScript/PowerSetSetup/releases/download/v1.02.1-beta/PowerSetSetup_portable-1.02.1-beta.zip",
-        "https://github.com/BrocatScript/PowerSetSetup/releases/download/v1.02.1-beta/PowerSetSetup_portable-1.02.1-beta.7z"
+        "https://github.com/BrocatScript/PowerSetSetup/releases/download/v1.0.2-beta.1/PowerSetSetup-1.0.2beta.1.zip"
     ],
     "changelog": {
       "en": "Performance has been improved, this is the first step in transitioning to Python",
       "ru": "Производительность повышена, первый шаг перехода на Python"
     },
-    "release_url": "https://github.com/BrocatScript/PowerSetSetup/releases/tag/v1.02.1-beta",
+    "release_url": "https://github.com/BrocatScript/PowerSetSetup/releases/tag/v1.0.2-beta.1",
     "mandatory": false
   }
 }
