@@ -1,10 +1,16 @@
 {
-    "language": "en",
+    "language": null,
     "auto_language": true,
-    "allow_beta": false,
+    "include_beta": false,
     "auto_download_install": false,
-    "version": "1.0.2",
-    "build": 1,
-    "last_modified": "2026-09-11 00:00:00",
+    "update_required": false,
+    "build": "2026-10-11 18:08:20",
+    "last_modified": "2026-10-11 18:08:20",
+    "portable_choice": null,
+    "portable_remember": false,
+    "mandatory_version": null,
+    "update_method": null,
+    "update_method_remember": false,
+    "emotes_support": false,
     "description": "settings for PowerSetSetup"
 }
