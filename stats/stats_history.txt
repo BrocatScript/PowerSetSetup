@@ -1267,10 +1267,10 @@
    -> PowerSetSetup-1.02.2-portable.7z: 0 (+0)
    -> PowerSetSetup-1.02.2-portable.rar: 0 (+0)
 
-[14.10.2026] Всего установок: 334 (+9 за день)
+[14.10.2026] Всего установок: 335 (+10 за день)
    -> PowerSetSetup_Installer-1.0.2.exe: 109 (+1)
    -> PowerSetSetup_Installer-1.0.1fix.exe: 95 (+0)
-   -> PowerSetSetup_Installer-1.02.2.exe: 48 (+7)
+   -> PowerSetSetup_Installer-1.02.2.exe: 49 (+8)
    -> PowerSetSetup-1.0.1fix.zip: 34 (+0)
    -> PowerSetSetup-1.0.1fix.rar: 13 (+0)
    -> PowerSetSetup-1.0.2build1.zip: 8 (+0)
