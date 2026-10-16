@@ -12,17 +12,17 @@ import math  # добавлено для округления
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
-
+ 
 REPO_OWNER = "BrocatScript"
 REPO_NAME = "PowerSetSetup"
 API_URL = f"https://api.github.com/repos/{REPO_OWNER}/{REPO_NAME}/releases"
-
+ 
 # Пути к файлам внутри папки проекта
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 DB_FILE = os.path.join(SCRIPT_DIR, "stats_database.json")
 TXT_FILE = os.path.join(SCRIPT_DIR, "stats_history.txt")
 CONFIG_FILE = os.path.join(SCRIPT_DIR, "stats_config.json")
-
+ 
 def clear():
     if platform.system() == "Windows":
         os.system("cls")
@@ -30,12 +30,12 @@ def clear():
         os.system("clear")
     elif platform.system() == "MacOS":
         os.system("clean")
-
+ 
 def log_message(text):
     """Выводит чистый и аккуратный лог работы со временем."""
     current_time = datetime.datetime.now().strftime("%H:%M:%S")
     print(f"[{current_time}] {text}")
-
+ 
 def load_config():
     """Загружает файл настроек автоматического открытия файла."""
     default_config = {"auto_open_on_exit": "dark_image"} # Допустимые: dark_image, light_image, text_log, none
@@ -51,7 +51,7 @@ def load_config():
             return json.load(f)
     except Exception:
         return default_config
-
+ 
 def open_file_by_config(config, today_str):
     """Автоматически открывает выбранный в конфиге файл при выходе из программы."""
     choice = config.get("auto_open_on_exit", "none")
@@ -63,7 +63,7 @@ def open_file_by_config(config, today_str):
         target_file = os.path.join(SCRIPT_DIR, f"stats_dashboard_{today_str}_light.png")
     elif choice == "text_log":
         target_file = TXT_FILE
-
+ 
     if target_file and os.path.exists(target_file):
         log_message(f"Автоматическое открытие файла: {os.path.basename(target_file)}...")
         try:
@@ -75,35 +75,109 @@ def open_file_by_config(config, today_str):
                 subprocess.run(["xdg-open", target_file])
         except Exception as e:
             log_message(f"Ошибка при автоматическом открытии файла: {e}")
-
+ 
+DB_FORMAT = 2
+ 
+def _encode_history(history):
+    """Полная история -> компактный формат: по каждому дню только изменения.
+ 
+    {"_format": 2, "days": {"2026-10-16": {"t": 346, "d": {"файл": +8}, "r": ["удалённый"]}}}
+    d — изменение счётчика файла за день (для нового файла — его значение),
+    r — файлы, исчезшие из релизов. Стартовые значения (initial_*) нужны только первому дню.
+    """
+    days = {}
+    prev = {}
+    for idx, d_str in enumerate(sorted(history.keys())):
+        rec = history[d_str]
+        assets = rec.get("assets", {})
+        entry = {"t": rec["total"]}
+        changes = {n: c - prev.get(n, 0) for n, c in assets.items()
+                   if n not in prev or c != prev[n]}
+        if changes:
+            entry["d"] = changes
+        removed = [n for n in prev if n not in assets]
+        if removed:
+            entry["r"] = removed
+        if idx == 0:
+            # Стартовые значения пишем только если они отличаются от значений самого дня
+            if rec.get("initial_total", rec["total"]) != rec["total"]:
+                entry["it"] = rec["initial_total"]
+            if rec.get("initial_assets", assets) != assets:
+                entry["ia"] = rec["initial_assets"]
+        days[d_str] = entry
+        prev = assets
+    return days
+ 
+def _decode_history(days):
+    """Компактный формат -> полная история в памяти (с ней работает весь остальной код)."""
+    history = {}
+    cur = {}
+    for idx, d_str in enumerate(sorted(days.keys())):
+        entry = days[d_str]
+        cur = dict(cur)
+        for n in entry.get("r", []):
+            cur.pop(n, None)
+        for n, delta in entry.get("d", {}).items():
+            cur[n] = cur.get(n, 0) + delta
+        rec = {"total": entry["t"], "assets": dict(cur)}
+        if idx == 0:
+            rec["initial_total"] = entry.get("it", entry["t"])
+            rec["initial_assets"] = entry.get("ia", dict(cur))
+        history[d_str] = rec
+    return history
+ 
 def load_history():
-    if os.path.exists(DB_FILE):
-        try:
-            with open(DB_FILE, "r", encoding="utf-8") as f:
-                return json.load(f)
-        except Exception:
-            return {}
-    return {}
-
-def save_history(history):
+    if not os.path.exists(DB_FILE):
+        return {}
     try:
-        with open(DB_FILE, "w", encoding="utf-8") as f:
-            json.dump(history, f, indent=4, ensure_ascii=False)
+        with open(DB_FILE, "r", encoding="utf-8") as f:
+            data = json.load(f)
+    except Exception as e:
+        log_message(f"Ошибка чтения базы данных: {e}")
+        return {}
+ 
+    if isinstance(data, dict) and data.get("_format") == DB_FORMAT:
+        return _decode_history(data.get("days", {}))
+ 
+    # Старый формат (полные данные за каждый день): один раз делаем резервную копию.
+    # Сама миграция произойдёт при ближайшем сохранении.
+    backup = os.path.join(SCRIPT_DIR, "stats_database.backup_v1.json")
+    if not os.path.exists(backup):
+        try:
+            with open(backup, "w", encoding="utf-8") as f:
+                json.dump(data, f, ensure_ascii=False)
+            log_message("База в старом формате: резервная копия stats_database.backup_v1.json создана.")
+        except Exception as e:
+            log_message(f"Предупреждение: не удалось создать резервную копию: {e}")
+    return data
+ 
+def save_history(history):
+    """Сохраняет историю в компактном формате: один день — одна строка."""
+    try:
+        days = _encode_history(history)
+        lines = [f"  {json.dumps(k)}: {json.dumps(v, ensure_ascii=False, separators=(',', ':'))}"
+                 for k, v in days.items()]
+        text = '{\n "_format": %d,\n "days": {\n%s\n }\n}\n' % (DB_FORMAT, ",\n".join(lines))
+        tmp = DB_FILE + ".tmp"
+        with open(tmp, "w", encoding="utf-8") as f:
+            f.write(text)
+        os.replace(tmp, DB_FILE)  # атомарная замена: файл не повредится при сбое
     except Exception as e:
         log_message(f"Ошибка сохранения базы данных: {e}")
-
+ 
 def update_text_log(history):
+    """Текстовый лог: по каждому дню только файлы, у которых что-то изменилось.
+    Для самого первого дня выводится полный стартовый список."""
     try:
         with open(TXT_FILE, "w", encoding="utf-8") as f:
             f.write("=== ИСТОРИЯ ЗАГРУЗОК PowerSetSetup (ОБНОВЛЯЕМЫЙ ЛОГ) ===\n")
-            f.write("Этот файл обновляется автоматически при каждом запуске скрипта.\n\n")
-            
+            f.write("Этот файл обновляется автоматически при каждом запуске скрипта.\n")
+            f.write("Для каждого дня показаны только файлы, у которых изменился счётчик.\n")
+ 
             all_dates = sorted(history.keys())
+            changes_by_day = []
             for idx, d_str in enumerate(all_dates):
                 record = history[d_str]
-                d_obj = datetime.date.fromisoformat(d_str)
-                formatted_date = d_obj.strftime("%d.%m.%Y")
-                
                 if idx > 0:
                     prev_record = history[all_dates[idx-1]]
                     day_change = record["total"] - prev_record["total"]
@@ -111,31 +185,67 @@ def update_text_log(history):
                 else:
                     day_change = record["total"] - record.get("initial_total", record["total"])
                     prev_assets = record.get("initial_assets", record["assets"])
-                    
+                changes_by_day.append((d_str, record, day_change, prev_assets))
+ 
+            if changes_by_day:
+                best = max(changes_by_day, key=lambda x: x[2])
+                if best[2] > 0:
+                    best_date = datetime.date.fromisoformat(best[0]).strftime("%d.%m.%Y")
+                    f.write(f"Рекордный день: {best_date} (+{best[2]})\n")
+            f.write("\n")
+ 
+            for idx, (d_str, record, day_change, prev_assets) in enumerate(changes_by_day):
+                formatted_date = datetime.date.fromisoformat(d_str).strftime("%d.%m.%Y")
                 sign = "+" if day_change >= 0 else ""
                 f.write(f"[{formatted_date}] Всего установок: {record['total']} ({sign}{day_change} за день)\n")
-                
+ 
                 for asset_name, count in sorted(record["assets"].items(), key=lambda x: x[1], reverse=True):
-                    prev_count = prev_assets.get(asset_name, count)
-                    a_change = count - prev_count
+                    a_change = count - prev_assets.get(asset_name, 0)
+                    if a_change == 0 and idx > 0:
+                        continue
                     a_sign = "+" if a_change >= 0 else ""
                     f.write(f"   -> {asset_name}: {count} ({a_sign}{a_change})\n")
                 f.write("\n")
     except Exception as e:
         log_message(f"Ошибка записи в текстовый лог: {e}")
-
-def get_delta_numeric(history, current_total, days_ago):
+ 
+def get_period_start(period):
+    """Дата начала текущего календарного периода: 'week' (с понедельника), 'month', 'year'."""
     today_dt = datetime.date.today()
-    target_date = (today_dt - datetime.timedelta(days=days_ago)).isoformat()
-    past_dates = sorted([d for d in history.keys() if d <= target_date])
-    if not past_dates:
-        all_dates = sorted(history.keys())
-        if all_dates:
-            return current_total - history[all_dates[0]]["total"]
-        return 0
-    ref_date = past_dates[-1]
-    return current_total - history[ref_date]["total"]
-
+    if period == "week":
+        return today_dt - datetime.timedelta(days=today_dt.weekday())
+    if period == "month":
+        return today_dt.replace(day=1)
+    if period == "year":
+        return today_dt.replace(month=1, day=1)
+    raise ValueError(period)
+ 
+def get_period_baseline(history, period):
+    """Базовая точка для календарного периода: последняя запись ДО его начала
+    (итог предыдущего воскресенья / последнего дня прошлого месяца / прошлого года).
+    Если истории до периода нет, берём стартовые значения самой первой записи.
+    Возвращает (total, assets).
+    """
+    if not history:
+        return 0, {}
+    start = get_period_start(period).isoformat()
+    before = sorted(d for d in history.keys() if d < start)
+    if before:
+        rec = history[before[-1]]
+        return rec["total"], rec.get("assets", {})
+    first = history[sorted(history.keys())[0]]
+    return (first.get("initial_total", first["total"]),
+            first.get("initial_assets", first.get("assets", {})))
+ 
+def get_week_baseline(history):
+    return get_period_baseline(history, "week")
+ 
+def get_delta_numeric(history, current_total, days_ago):
+    # Все периоды календарные: неделя — с понедельника, месяц — с 1-го числа, год — с 1 января.
+    period = {7: "week", 30: "month", 365: "year"}[days_ago]
+    base_total, _ = get_period_baseline(history, period)
+    return current_total - base_total
+ 
 def save_single_dashboard(style_name, file_path, is_dark, lang, history, current_assets, current_total, today_formatted):
     """Внутренний метод генерации структуры графиков под конкретную тему и язык."""
     t = {
@@ -172,11 +282,11 @@ def save_single_dashboard(style_name, file_path, is_dark, lang, history, current
             "weekly_label": "weekly"
         }
     }[lang]
-
+ 
     with plt.style.context(style_name):
         fig = plt.figure(figsize=(16, 12), facecolor='#121212' if is_dark else '#ffffff')
         fig.suptitle(t["title"], fontsize=18, fontweight='bold', y=0.96, color='#ffffff' if is_dark else '#000000')
-
+ 
         # --- ГРАФИК 1: Линейная динамика (последние N дней) ---
         ax1 = plt.subplot(2, 2, 1, facecolor='#1e1e1e' if is_dark else '#fbfbfb')
         
@@ -200,7 +310,7 @@ def save_single_dashboard(style_name, file_path, is_dark, lang, history, current
         if growth_values:
             data_min = min(growth_values)
             data_max = max(growth_values)
-
+ 
             if data_min >= 0:
                 # Обычный случай (нет отрицательных значений): держим ноль
                 # почти у самого низа графика — небольшой фиксированный
@@ -213,22 +323,22 @@ def save_single_dashboard(style_name, file_path, is_dark, lang, history, current
                 data_range = data_max - data_min
                 margin = max(0.5, data_range * 0.12)
                 y_min = data_min - margin
-
+ 
             y_max = max(data_max + 1, MIN_Y_MAX)
-
+ 
             # "Красивое" округление вниз — но не раздуваем маленький
             # отступ у нуля (иначе ноль опять визуально уедет вверх).
             if y_min < -0.1:
                 y_min = math.floor(y_min * 2) / 2
             y_max = math.ceil(y_max)
-
+ 
             if y_max - y_min < 2:
                 y_max = y_min + 2
-
+ 
             ax1.set_ylim(y_min, y_max)
         else:
             ax1.set_ylim(-0.1, MIN_Y_MAX)
-
+ 
         # --- НОВАЯ ЛОГИКА ПОДБОРА ТИКОВ ---
         y_min, y_max = ax1.get_ylim()
         range_val = y_max - y_min
@@ -272,14 +382,14 @@ def save_single_dashboard(style_name, file_path, is_dark, lang, history, current
         ax1.plot(dates_labels, growth_values, marker='o', linewidth=2.5, color=line_color, label=t["downloads"])
         ax1.fill_between(dates_labels, growth_values, color=line_color, alpha=0.15)
         
-
+ 
         
         ax1.set_title(t["g1_title"], fontsize=12, fontweight='bold', color='#ffffff' if is_dark else '#000000', pad=10)
         ax1.set_xlabel(t["g1_x"], color='#aaaaaa' if is_dark else '#555555')
         ax1.set_ylabel(t["g1_y"], color='#aaaaaa' if is_dark else '#555555')
         ax1.grid(True, linestyle='--', alpha=0.2 if is_dark else 0.5, color='#ffffff' if is_dark else '#cccccc')
         ax1.tick_params(colors='#ffffff' if is_dark else '#000000')
-
+ 
         # --- ГРАФИК 2: Сравнение периодов ---
         ax2 = plt.subplot(2, 2, 2, facecolor='#1e1e1e' if is_dark else '#fbfbfb')
         p_values = [
@@ -295,7 +405,7 @@ def save_single_dashboard(style_name, file_path, is_dark, lang, history, current
         ax2.set_ylabel(t["g2_y"], color='#aaaaaa' if is_dark else '#555555')
         ax2.grid(axis='y', linestyle='--', alpha=0.2 if is_dark else 0.5, color='#ffffff' if is_dark else '#cccccc')
         ax2.tick_params(colors='#ffffff' if is_dark else '#000000')
-
+ 
         max_val = max(p_values) if p_values else 10
         ax2.set_ylim(0, max_val * 1.2 if max_val > 0 else 10)
         
@@ -309,27 +419,20 @@ def save_single_dashboard(style_name, file_path, is_dark, lang, history, current
             ax2.annotate(label_text, xy=(bar.get_x() + bar.get_width() / 2, height),
                         xytext=(0, 4), textcoords="offset points",
                         ha='center', va='bottom', fontweight='bold', color='#ffffff' if is_dark else '#000000')
-
+ 
         # --- ГРАФИК 3: Круговая диаграмма ---
         ax3 = plt.subplot(2, 1, 2, facecolor='#121212' if is_dark else '#ffffff')
         sorted_files = sorted(current_assets.items(), key=lambda x: x[1], reverse=True)
         
-        today_dt = datetime.date.today()
-        target_date_7d = (today_dt - datetime.timedelta(days=7)).isoformat()
-        past_dates_7d = sorted([d for d in history.keys() if d <= target_date_7d])
-        
-        if past_dates_7d:
-            prev_assets = history[past_dates_7d[-1]].get("assets", {})
-        else:
-            prev_assets = history[all_keys[0]].get("initial_assets", history[all_keys[0]].get("assets", {})) if all_keys else {}
-
+        _, prev_assets = get_week_baseline(history)
+ 
         pie_values = []
         legend_labels = []
         other_sum = 0
         other_change_sum = 0
         
         for idx, (name, count) in enumerate(sorted_files):
-            prev_count = prev_assets.get(name, count)
+            prev_count = prev_assets.get(name, 0)  # новый файл: все его скачивания — новые
             asset_change = count - prev_count
             change_str = f" (+{asset_change} {t['weekly_label']})" if asset_change > 0 else ""
             
@@ -356,7 +459,7 @@ def save_single_dashboard(style_name, file_path, is_dark, lang, history, current
                 if pct < 2.0:
                     return ""
                 return f"{pct:.1f}%"
-
+ 
             wedges, texts, autotexts = ax3.pie(
                 pie_values, labels=None, autopct=adaptive_autopct, startangle=140,
                 colors=pie_colors[:len(pie_values)], pctdistance=0.68,
@@ -366,12 +469,12 @@ def save_single_dashboard(style_name, file_path, is_dark, lang, history, current
                     'weight': 'bold'
                 }
             )
-
+ 
             for wedge, autotext in zip(wedges, autotexts):
                 pct = (wedge.theta2 - wedge.theta1) / 360.0 * 100.0
                 if not autotext.get_text():
                     continue
-
+ 
                 if pct >= 50:
                     fontsize = 14
                 elif pct >= 20:
@@ -384,9 +487,9 @@ def save_single_dashboard(style_name, file_path, is_dark, lang, history, current
                     fontsize = 7
                 else:
                     fontsize = 6.2
-
+ 
                 autotext.set_fontsize(fontsize)
-
+ 
             leg = ax3.legend(wedges, legend_labels, title=t["g3_leg_title"], loc="center left", bbox_to_anchor=(1.0, 0.5), 
                              facecolor='#1e1e1e' if is_dark else '#f5f5f5', edgecolor='#333333' if is_dark else '#cccccc', fontsize=10)
             plt.setp(leg.get_texts(), color='#ffffff' if is_dark else '#000000')
@@ -396,12 +499,12 @@ def save_single_dashboard(style_name, file_path, is_dark, lang, history, current
         else:
             ax3.text(0.5, 0.5, t["no_data"], ha='center', va='center', color='#ffffff' if is_dark else '#000000')
             ax3.axis('off')
-
+ 
         plt.tight_layout(rect=[0, 0.02, 0.98, 0.93])
         fig.subplots_adjust(hspace=0.45, wspace=0.35) 
         plt.savefig(file_path, dpi=150, bbox_inches='tight', facecolor=fig.get_facecolor(), edgecolor='none')
         plt.close()
-
+ 
 def generate_visual_dashboards(history, current_assets, current_total):
     """Генерирует 4 независимые картинки: (RU/EN) x (Dark/Light)."""
     try:
@@ -417,7 +520,7 @@ def generate_visual_dashboards(history, current_assets, current_total):
                         
     except Exception as e:
         log_message(f"КРИТИЧЕСКАЯ ОШИБКА генерации графиков: {e}")
-
+ 
 def get_all_releases():
     releases = []
     url = API_URL
@@ -430,7 +533,7 @@ def get_all_releases():
         else:
             url = None
     return releases
-
+ 
 def status():
     log_message("Запрос актуальных данных с GitHub API...")
     try:
@@ -438,28 +541,28 @@ def status():
     except requests.exceptions.RequestException as e:
         log_message(f"ОШИБКА API: Не удалось связаться с сервером: {e}")
         return
-
+ 
     if not releases:
         log_message("ОШИБКА API: Список релизов пуст.")
         return
-
+ 
     asset_downloads = defaultdict(int)
     total_downloads = 0
-
+ 
     for release in releases:
         for asset in release.get("assets", []):
             name = asset["name"]
             count = asset.get("download_count", 0)
             asset_downloads[name] += count
             total_downloads += count
-
+ 
     current_total = total_downloads
     current_assets = dict(asset_downloads)
     today_str = datetime.date.today().isoformat()
-
+ 
     history = load_history()
     past_dates = sorted([d for d in history.keys() if d < today_str])
-
+ 
     if past_dates:
         baseline_total = history[past_dates[-1]]["total"]
         baseline_assets = history[past_dates[-1]]["assets"]
@@ -470,7 +573,7 @@ def status():
         else:
             baseline_total = current_total
             baseline_assets = current_assets
-
+ 
     if today_str in history:
         history[today_str]["total"] = current_total
         history[today_str]["assets"] = current_assets
@@ -490,28 +593,20 @@ def status():
     
     # Генерация графических панелей
     generate_visual_dashboards(history, current_assets, current_total)
-
+ 
     # ВЫВОД СПИСКА СКАЧИВАНИЙ ЗА НЕДЕЛЮ В КОНСОЛЬ
     print("\n" + "="*70)
-    log_message("СТАТИСТИКА СКАЧИВАНИЙ ПО ВЕРСИЯМ ЗА ПОСЛЕДНИЕ 7 ДНЕЙ:")
-    today_dt = datetime.date.today()
-    target_date_7d = (today_dt - datetime.timedelta(days=7)).isoformat()
-    past_dates_7d = sorted([d for d in history.keys() if d <= target_date_7d])
-    
-    if past_dates_7d:
-        ref_assets_7d = history[past_dates_7d[-1]].get("assets", {})
-    else:
-        all_dates = sorted(history.keys())
-        ref_assets_7d = history[all_dates[0]].get("initial_assets", history[all_dates[0]].get("assets", {})) if all_dates else {}
-        
+    log_message("СТАТИСТИКА СКАЧИВАНИЙ ПО ВЕРСИЯМ ЗА ТЕКУЩУЮ НЕДЕЛЮ (с понедельника):")
+    _, ref_assets_7d = get_week_baseline(history)
+ 
     for name, count in sorted(current_assets.items(), key=lambda x: x[1], reverse=True):
-        prev_count = ref_assets_7d.get(name, count)
+        prev_count = ref_assets_7d.get(name, 0)
         diff = count - prev_count
         print(f"  • {name}: {count} шт. (За неделю: +{diff})")
     print("="*70 + "\n")
-
+ 
 def main():
     status()
-
+ 
 if __name__ == "__main__":
     main()
