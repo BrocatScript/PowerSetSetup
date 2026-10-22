@@ -248,6 +248,11 @@ def get_delta_numeric(history, current_total, days_ago):
  
 def save_single_dashboard(style_name, file_path, is_dark, lang, history, current_assets, current_total, today_formatted):
     """Внутренний метод генерации структуры графиков под конкретную тему и язык."""
+    
+    # Исправление для корректного отображения кириллицы на графиках
+    plt.rcParams['font.sans-serif'] = ['DejaVu Sans', 'Arial', 'Segoe UI', 'Tahoma', 'sans-serif']
+    plt.rcParams['axes.unicode_minus'] = False
+    
     t = {
         "ru": {
             "title": f"Аналитический дашборд PowerSetSetup ({today_formatted})",
@@ -287,7 +292,7 @@ def save_single_dashboard(style_name, file_path, is_dark, lang, history, current
         fig = plt.figure(figsize=(16, 12), facecolor='#121212' if is_dark else '#ffffff')
         fig.suptitle(t["title"], fontsize=18, fontweight='bold', y=0.96, color='#ffffff' if is_dark else '#000000')
  
-        # --- ГРАФИК 1: Линейная динамика (последние N дней) ---
+        # --- ГРАФИК 1: Линейная динамика ---
         ax1 = plt.subplot(2, 2, 1, facecolor='#1e1e1e' if is_dark else '#fbfbfb')
         
         DAYS_TO_SHOW = 7
@@ -312,22 +317,14 @@ def save_single_dashboard(style_name, file_path, is_dark, lang, history, current
             data_max = max(growth_values)
  
             if data_min >= 0:
-                # Обычный случай (нет отрицательных значений): держим ноль
-                # почти у самого низа графика — небольшой фиксированный
-                # отступ, которого достаточно, чтобы точку было видно,
-                # но недостаточно, чтобы визуально "поднимать" график.
                 y_min = -0.1
             else:
-                # Если есть провалы ниже нуля, отступ считаем от разброса
-                # данных, чтобы самая нижняя точка не обрезалась по краю.
                 data_range = data_max - data_min
                 margin = max(0.5, data_range * 0.12)
                 y_min = data_min - margin
  
             y_max = max(data_max + 1, MIN_Y_MAX)
  
-            # "Красивое" округление вниз — но не раздуваем маленький
-            # отступ у нуля (иначе ноль опять визуально уедет вверх).
             if y_min < -0.1:
                 y_min = math.floor(y_min * 2) / 2
             y_max = math.ceil(y_max)
@@ -339,11 +336,9 @@ def save_single_dashboard(style_name, file_path, is_dark, lang, history, current
         else:
             ax1.set_ylim(-0.1, MIN_Y_MAX)
  
-        # --- НОВАЯ ЛОГИКА ПОДБОРА ТИКОВ ---
         y_min, y_max = ax1.get_ylim()
         range_val = y_max - y_min
         
-        # Выбираем "красивый" шаг
         if range_val <= 5:
             step = 1
         elif range_val <= 20:
@@ -355,19 +350,12 @@ def save_single_dashboard(style_name, file_path, is_dark, lang, history, current
         else:
             step = 50
         
-        # Первый тик — округляем вниз, последний — вниз (чтобы не выходить за пределы)
-        # Для положительной серии не показываем отрицательные тики:
-        # отрицательный предел остаётся только как небольшой визуальный запас.
         first_tick = 0 if min(growth_values, default=0) >= 0 else math.floor(y_min / step) * step
         last_tick = math.floor(y_max / step) * step
-        # Если last_tick == first_tick, добавляем один шаг вверх
         if last_tick <= first_tick:
             last_tick = first_tick + step
-        # Генерируем список тиков
         ticks = list(range(int(first_tick), int(last_tick) + 1, int(step)))
-        # Если тиков больше 10, увеличиваем шаг (пересчитываем)
         if len(ticks) > 10:
-            # Увеличиваем шаг в 2 раза и пересчитываем
             step *= 2
             first_tick = math.floor(y_min / step) * step
             last_tick = math.floor(y_max / step) * step
@@ -381,8 +369,6 @@ def save_single_dashboard(style_name, file_path, is_dark, lang, history, current
         line_color = '#00adb5' if is_dark else '#1f77b4'
         ax1.plot(dates_labels, growth_values, marker='o', linewidth=2.5, color=line_color, label=t["downloads"])
         ax1.fill_between(dates_labels, growth_values, color=line_color, alpha=0.15)
-        
- 
         
         ax1.set_title(t["g1_title"], fontsize=12, fontweight='bold', color='#ffffff' if is_dark else '#000000', pad=10)
         ax1.set_xlabel(t["g1_x"], color='#aaaaaa' if is_dark else '#555555')
@@ -432,7 +418,7 @@ def save_single_dashboard(style_name, file_path, is_dark, lang, history, current
         other_change_sum = 0
         
         for idx, (name, count) in enumerate(sorted_files):
-            prev_count = prev_assets.get(name, 0)  # новый файл: все его скачивания — новые
+            prev_count = prev_assets.get(name, 0)
             asset_change = count - prev_count
             change_str = f" (+{asset_change} {t['weekly_label']})" if asset_change > 0 else ""
             
@@ -451,11 +437,7 @@ def save_single_dashboard(style_name, file_path, is_dark, lang, history, current
         if sum(pie_values) > 0:
             pie_colors = ['#00adb5', '#ff2e63', '#00e676', '#f8b500', '#9b5de5', '#ff9f43'] if is_dark else ['#5dade2', '#e74c3c', '#2ecc71', '#f1c40f', '#9b5de5', '#e67e22']
             
-            # Адаптивные подписи процентов: слишком маленькие сектора
-            # не получают текст, а для небольших секторов шрифт уменьшается.
             def adaptive_autopct(pct):
-                # Показываем даже маленькие, но реально читаемые сектора.
-                # Совсем крошечные (меньше 2%) лучше оставить без текста.
                 if pct < 2.0:
                     return ""
                 return f"{pct:.1f}%"
