@@ -338,3 +338,6 @@
    -> PowerSetSetup_Installer-1.02.2.exe: 107 (+7)
    -> PowerSetSetup-1.02.2-portable.zip: 4 (+1)
 
+[24.10.2026] Всего установок: 404 (+3 за день)
+   -> PowerSetSetup_Installer-1.02.2.exe: 110 (+3)
+
