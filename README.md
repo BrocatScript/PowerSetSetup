@@ -28,7 +28,7 @@
   <img alt="PowerSetSetup Stats" src="stats/stats_dashboard_en_dark.png">
 </picture>
 
-Updated every hour...
+It updates within an hour or more...
 
 ## 📖 Description
 
@@ -138,7 +138,7 @@ For questions, suggestions, or collaboration:
   <img alt="PowerSetSetup Stats" src="stats/stats_dashboard_ru_dark.png">
 </picture>
 
-Обновление каждый час...
+Обновляется в течение часа или более...
 
 ## 📖 Описание
 
