@@ -352,7 +352,7 @@
 [27.10.2026] Всего установок: 428 (+5 за день)
    -> PowerSetSetup_Installer-1.02.2.exe: 132 (+5)
 
-[28.10.2026] Всего установок: 430 (+2 за день)
-   -> PowerSetSetup_Installer-1.02.2.exe: 133 (+1)
+[28.10.2026] Всего установок: 439 (+11 за день)
+   -> PowerSetSetup_Installer-1.02.2.exe: 142 (+10)
    -> PowerSetSetup_Installer-1.0.2.exe: 115 (+1)
 
