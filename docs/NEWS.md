@@ -7,7 +7,7 @@
 </div>
 
 <p align="center">
-  <a href="README.md">
+  <a href="https://github.com/BrocatScript/PowerSetSetup">
     <img src="https://img.shields.io/badge/←%20Back%20to%20README-181717?style=for-the-badge&logo=github&logoColor=white" alt="Back to README">
   </a>
 </p>
