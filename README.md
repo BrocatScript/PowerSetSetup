@@ -20,6 +20,7 @@
 [![Issues](https://img.shields.io/badge/🐞%20Issues-Report%20Bug-red?style=for-the-badge&logo=github)](https://github.com/BrocatScript/PowerSetSetup/issues)
 [![Pull Requests](https://img.shields.io/badge/🔀%20PRs-Contribute-green?style=for-the-badge&logo=github)](https://github.com/BrocatScript/PowerSetSetup/pulls)
 [![Wiki](https://img.shields.io/badge/📚%20Wiki-Documentation-lightgrey?style=for-the-badge&logo=readthedocs)](https://github.com/BrocatScript/PowerSetSetup/wiki)
+[![News](https://img.shields.io/badge/📰%20News-lightgrey?style=for-the-badge&logo=readthedocs)](https://github.com/BrocatScript/PowerSetSetup/blob/main/docs/NEWS.md)
 [![Source](https://img.shields.io/badge/📁%20Source-Code-black?style=for-the-badge&logo=github)](https://github.com/BrocatScript/PowerSetSetup)
 
 <picture>
@@ -130,6 +131,7 @@ For questions, suggestions, or collaboration:
 [![Issues](https://img.shields.io/badge/🐞%20Отчет-о%20проблемах%20Bug-red?style=for-the-badge&logo=github)](https://github.com/BrocatScript/PowerSetSetup/issues)
 [![Pull Requests](https://img.shields.io/badge/🔀%20PRs-Слияния-green?style=for-the-badge&logo=github)](https://github.com/BrocatScript/PowerSetSetup/pulls)
 [![Wiki](https://img.shields.io/badge/📚%20Wiki-Документация-lightgrey?style=for-the-badge&logo=readthedocs)](https://github.com/BrocatScript/PowerSetSetup/wiki)
+[![News](https://img.shields.io/badge/📰%20Новости-lightgrey?style=for-the-badge&logo=readthedocs)](https://github.com/BrocatScript/PowerSetSetup/blob/main/docs/NEWS.md)
 [![Source](https://img.shields.io/badge/📁%20Source-Код-black?style=for-the-badge&logo=github)](https://github.com/BrocatScript/PowerSetSetup)
 
 <picture>
