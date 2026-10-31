@@ -89,7 +89,7 @@ It updates within an hour or more...
 
 If you find this tool useful, consider supporting the development:
 
-[![Support](https://img.shields.io/badge/Support-Developer-FF6B6B?style=for-the-badge&logo=heart)](https://pay.cloudtips.ru/p/0cdee068)
+[![Support](https://img.shields.io/badge/Support-Developer-FF6B6B?style=for-the-badge&logo=heart)](not work)
 
 ---
 
@@ -200,7 +200,7 @@ For questions, suggestions, or collaboration:
 
 Если вам понравился этот инструмент, подумайте о том, чтобы поддержать его разработку:
 
-[![Support](https://img.shields.io/badge/Поддержать-Разработчика-FF6B6B?style=for-the-badge&logo=heart)](https://pay.cloudtips.ru/p/0cdee068)
+[![Support](https://img.shields.io/badge/Поддержать-Разработчика-FF6B6B?style=for-the-badge&logo=heart)](not work)
 
 ---
 
