@@ -128,6 +128,7 @@
   "2026-10-29": {"t":443,"d":{"PowerSetSetup_Installer-1.02.2.exe":3}},
   "2026-10-30": {"t":456,"d":{"PowerSetSetup-1.02.2-portable.zip":1,"PowerSetSetup_Installer-1.02.2.exe":12}},
   "2026-10-31": {"t":460,"d":{"PowerSetSetup_Installer-1.0.2.exe":2,"PowerSetSetup_Installer-1.02.2.exe":2}},
-  "2026-11-01": {"t":471,"d":{"PowerSetSetup_Installer-1.02.2.exe":10,"PowerSetSetup_Installer-1.0.2.exe":1}}
+  "2026-11-01": {"t":471,"d":{"PowerSetSetup_Installer-1.0.2.exe":1,"PowerSetSetup_Installer-1.02.2.exe":10}},
+  "2026-11-02": {"t":472,"d":{"PowerSetSetup_Installer-1.02.2.exe":1}}
  }
 }
