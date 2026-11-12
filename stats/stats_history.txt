@@ -411,6 +411,7 @@
 [11.11.2026] Всего установок: 529 (+4 за день)
    -> PowerSetSetup_Installer-1.02.2.exe: 216 (+4)
 
-[12.11.2026] Всего установок: 538 (+9 за день)
-   -> PowerSetSetup_Installer-1.02.2.exe: 225 (+9)
+[12.11.2026] Всего установок: 541 (+12 за день)
+   -> PowerSetSetup_Installer-1.02.2.exe: 226 (+10)
+   -> PowerSetSetup-1.02.2-portable.zip: 8 (+2)
 
