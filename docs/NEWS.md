@@ -87,8 +87,6 @@ The new architecture is being developed with future improvements and further exp
 
 ## 📅 October 2026.11.10(Y.D.M)
 
-The following improvements are currently planned for October 2026:
-
 1. 🇬🇧🇷🇺 **Complete translation improvements** — `v1.02.2`
 2. 🔄 **Redesign of the update system** — `v1.02.2`
 3. 💼 **Full portable versions** — `v1.02.2`
@@ -202,8 +200,6 @@ PowerSetSetup также переходит на **новую архитекту
 ---
 
 ## 📅 Октябрь 2026.10.11(Г.М.Д)
-
-На октябрь 2026 года запланированы следующие изменения:
 
 1. 🇬🇧🇷🇺 **Полное исправление и улучшение переводов** — `v1.02.2`
 2. 🔄 **Переработка системы обновлений** — `v1.02.2`
